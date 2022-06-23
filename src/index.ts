@@ -16,6 +16,8 @@ import './utils/db';
 import { handleError, } from './utils/error';
 
 import { userRouter, } from './routers/user';
+import { productRouter, } from './routers/product';
+import { cartRouter, } from './routers/cart';
 
 const app = express ();
 
@@ -41,6 +43,12 @@ app.use (json ());
 const router = Router ();
 router.use (
   '/user', userRouter
+);
+router.use (
+  '/product', productRouter
+);
+router.use (
+  '/cart', cartRouter
 );
 app.use (
   '/api', router

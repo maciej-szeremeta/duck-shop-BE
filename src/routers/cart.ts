@@ -2,15 +2,15 @@ import { Router, } from 'express';
 
 // import { NotFoundError, ValidationError, } from '../utils/error';
 
-export const userRouter = Router ();
+export const cartRouter = Router ();
 
-userRouter
+cartRouter
 
   .get (
     '/', async (
       req, res
     ) => {
-      res.json ({ msg: 'user GET', });
+      res.json ({ msg: 'cart GET', });
     }
   )
 
@@ -19,6 +19,6 @@ userRouter
       req, res
     ) => {
 
-      res.json ({ msg: 'user POST', body: req.body, });
+      res.json ({ msg: 'cart POST', body: req.body, });
     }
   );
