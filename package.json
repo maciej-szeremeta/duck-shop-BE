@@ -1,7 +1,7 @@
 {
-  "name": "mega",
+  "name": "duckshop",
   "version": "0.1.0",
-  "description": "Projekt TS",
+  "description": "Rubber duck shop",
   "main": "index.ts",
   "scripts": {
     "start": "node dist/index.js",
