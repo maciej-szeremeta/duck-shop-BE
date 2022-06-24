@@ -1,9 +1,11 @@
 import { Router, } from 'express';
 import { compare, hash, } from 'bcryptjs';
+import { sign, } from 'jsonwebtoken';
 
 import { NotFoundError, UnauthorizedError, ValidationError, } from '../utils/error';
 import { UserRecord, } from '../records/user.record';
 import { RegisterUserReq, } from '../types';
+import { config, } from '../config/config';
 
 export const authRouter = Router ();
 
@@ -22,7 +24,7 @@ authRouter
         throw new ValidationError (`ENazwa użytkownika ${req.body.username} jest zajęta. Wybierz inny.`);
       }
       const hashedPassword = await hash (
-        req.body.password, 1
+        req.body.password, 10
       );
       const hashedUser = {
         username: req.body.username,
@@ -70,20 +72,16 @@ authRouter
       }
 
       console.log (user);
+        
+      const accessToken = sign (
+        { id: user.id, isAdmin: user.isAdmin, }, config.JWT_KEY, { expiresIn: '3d', }
+      );
 
-      // Jeżeli wszystkie dane są poprawne generowany jest podpis i jego wersja odświeżająca
-      // const { id, isAdmin, } = user as UserVerify;
-      // const accessToken = generateAccessToken ({ id, isAdmin, });
-      // const refreshToken = generateRefreshToken ({ id, isAdmin, });
+      const { password, ...others } = user;
 
-      // // Zapisanie do tablicy
-      // refreshTokens.push (refreshToken);
-
-      // res.json ({
-      //   username: user.username,
-      //   isAdmin : user.isAdmin,
-      //   accessToken,
-      //   refreshToken,
-      // } as LoginUserReq);
+      res.json ({
+        ...others,
+        accessToken,
+      });
     }
   );
