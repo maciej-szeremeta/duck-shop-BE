@@ -16,6 +16,7 @@ import './utils/db';
 import { handleError, } from './utils/error';
 
 import { userRouter, } from './routers/user';
+import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
 import { cartRouter, } from './routers/cart';
 
@@ -41,6 +42,9 @@ app.use (morgan ('dev'));
 app.use (json ());
 
 const router = Router ();
+router.use (
+  '/auth', authRouter
+);
 router.use (
   '/user', userRouter
 );

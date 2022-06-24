@@ -18,9 +18,9 @@ export class UserRecord implements UserEntity {
 
   public isAdmin?: boolean;
 
-  private createdAt?: Date | number;
+  public createdAt?: Date | number;
 
-  private updatedAt?: Date | number;
+  public updatedAt?: Date | number;
 
   constructor(obj: Omit<UserEntity, 'insert' | 'update'>) {
 
@@ -29,9 +29,8 @@ export class UserRecord implements UserEntity {
     this.email = obj.email;
     this.password = obj.password;
     this.isAdmin= obj.isAdmin ?? false;
-
-    //  this.createdAt= obj.createdAt ?? Date.now ();
-    //  this.updatedAt= obj.updatedAt ?? Date.now ();
+    this.createdAt= obj.createdAt ?? Date.now ();
+    this.updatedAt= obj.updatedAt ?? Date.now ();
 
     this._validate ();
   }
@@ -40,7 +39,7 @@ export class UserRecord implements UserEntity {
 
     if (
       !this.username ||
-       this.username.trim ().length < 3 ||
+      this.username.trim ().length < 3 ||
       this.username.trim ().length > 20
     ) {
       throw new ValidationError ('Nazwa użytownika nie może być pusta oraz musi zawierać od 3 do 20 znaków.');
@@ -82,4 +81,25 @@ export class UserRecord implements UserEntity {
     return results.length > 0;
   }
 
+  async insert(): Promise<UserRecord> {
+    await pool.execute (
+      'INSERT INTO `users` VALUES(:id, :username, :email, :password, :isAdmin, :createdAt, :updatedAt)', {
+        id       : this.id,
+        username : this.username,
+        email    : this.email,
+        password : this.password,
+        isAdmin  : this.isAdmin,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
+      }
+    );
+    return this;
+  }
+
+  static async getOneByUsername(username: string): Promise<UserRecord | null> {
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `users` WHERE `username`=:username', { username, }
+    )) as UserRecordResult;
+    return results.length === 0 ? null : new UserRecord (results[ 0 ]);
+  }
 }
