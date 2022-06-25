@@ -93,7 +93,7 @@ export class UserRecord implements UserEntity {
         updatedAt: this.updatedAt,
       }
     );
-    return this;
+    return this as UserRecord;
   }
 
   static async getOneByUsername(username: string): Promise<UserRecord | null> {
@@ -101,5 +101,33 @@ export class UserRecord implements UserEntity {
       'SELECT * FROM `users` WHERE `username`=:username', { username, }
     )) as UserRecordResult;
     return results.length === 0 ? null : new UserRecord (results[ 0 ]);
+  } 
+
+  static async getOneById(id: string): Promise<UserRecord | null> {
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `users` WHERE `id`=:id', { id, }
+    )) as UserRecordResult;
+    return results.length === 0 ? null : new UserRecord (results[ 0 ]);
+  } 
+
+  async update(): Promise<string> {
+
+    if (!this.id) {
+      throw new NotFoundError ('Brak id w zapytaniu');
+    }
+    console.log (this);
+    this._validate ();
+    await pool.execute (
+      'UPDATE `users` SET `username`= :username,`email`=:email,`password`=:password,`isAdmin`=:isAdmin,`updatedAt`=:updatedAt WHERE `id`=:id', {
+        id       : this.id,
+        username : this.username,
+        email    : this.email,
+        password : this.password,
+        isAdmin  : this.isAdmin,
+        createdAt: this.createdAt,
+        updatedAt: Date.now (),
+      }
+    );
+    return this.id;
   }
 }

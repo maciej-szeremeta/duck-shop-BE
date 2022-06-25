@@ -1,5 +1,3 @@
-// Dane Backendowe z Record
-
 export interface UserEntity {
   id?: string;
   username: string;
@@ -10,4 +8,15 @@ export interface UserEntity {
   updatedAt? : Date | number;
 }
 
-export type RegisterUserReq = UserEntity
+export type RegisterUserReq = Omit<UserEntity, 'id' | 'isAdmin' | 'createdAt' | 'updatedAt'>;
+
+export type RegisterUserRes = {
+  username: string;
+  email: string;
+}
+
+type UserEntityWitoutPassword = Omit<UserEntity, 'password'>
+
+export interface LoginUserRes extends UserEntityWitoutPassword{
+  accessToken: string
+}

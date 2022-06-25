@@ -1,11 +1,10 @@
 import { Router, } from 'express';
 import { compare, hash, } from 'bcryptjs';
-import { sign, } from 'jsonwebtoken';
 
-import { NotFoundError, UnauthorizedError, ValidationError, } from '../utils/error';
+import { UnauthorizedError, ValidationError, } from '../utils/error';
 import { UserRecord, } from '../records/user.record';
-import { RegisterUserReq, } from '../types';
-import { config, } from '../config/config';
+import { LoginUserRes, RegisterUserReq, RegisterUserRes, } from '../types';
+import { generateAccessToken, TokenPayload, } from '../utils/token';
 
 export const authRouter = Router ();
 
@@ -21,43 +20,39 @@ authRouter
         throw new ValidationError (`Email ${req.body.email} jest zajęte. Wybierz inny email.`);
       }
       if (await UserRecord.isUserNameTaken (req.body.username)) {
-        throw new ValidationError (`ENazwa użytkownika ${req.body.username} jest zajęta. Wybierz inny.`);
+        throw new ValidationError (`Nazwa użytkownika ${req.body.username} jest zajęta. Wybierz inny.`);
       }
-      const hashedPassword = await hash (
+      const saltAndHashPassword = await hash (
         req.body.password, 10
       );
-      const hashedUser = {
+
+      const newUser = new UserRecord ({
         username: req.body.username,
         email   : req.body.email,
-        password: hashedPassword,
+        password: saltAndHashPassword,
         isAdmin : req.body.isAdmin,
-      };
-
-      const newUser = new UserRecord (hashedUser as RegisterUserReq);
+      } as RegisterUserReq);
+        
       await newUser.insert ();
 
-      // Zwracane tylko te dane które są niezbędne
-      // const { username, email, } = newUser;
+      const { username, email, } = newUser;
    
-      // res.status (201).json ({ username, email, });
-      res.status (201).json (newUser);
+      res.status (201).json ({ username, email, } as RegisterUserRes);
     } 
   )
 
-// Login
+// @ Login
   .post (
     '/login', async (
       req, res
     ) => {
 
-      // Sprawdzamy wpisanych danych
       if (!req.body.username || !req.body.password) {
         throw new ValidationError ('Proszę wypełnić dane logowania');
       }
 
       const user = await UserRecord.getOneByUsername (req.body.username);
 
-      // Sprawdzamy czy dany user istnieje w bazie (można zrobić w record)
       if (!user) {
         throw new UnauthorizedError ('Błędne dane Logowania');
       }
@@ -70,18 +65,14 @@ authRouter
       if (!validPassword) {
         throw new UnauthorizedError ('Błędne dane logowania hasło');
       }
-
-      console.log (user);
         
-      const accessToken = sign (
-        { id: user.id, isAdmin: user.isAdmin, }, config.JWT_KEY, { expiresIn: '3d', }
-      );
+      const accessToken = generateAccessToken ({ id: user.id, isAdmin: user.isAdmin, } as TokenPayload);
 
       const { password, ...others } = user;
 
       res.json ({
         ...others,
         accessToken,
-      });
+      } as LoginUserRes);
     }
   );
