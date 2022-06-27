@@ -1,5 +1,6 @@
 import { verify, } from 'jsonwebtoken';
 import { NextFunction, Request, Response, } from 'express';
+import { Console, } from 'console';
 import { ForbidenError, UnauthorizedError, } from './error';
 import { config, } from '../config/config';
 
@@ -57,6 +58,22 @@ export const verifyTokenAndAuthorization = (
   verifyToken (
     req, res, () => {
       if ((req.user as VerifyPayload).id === req.params.id || (req.user as VerifyPayload).isAdmin) {
+        next ();
+      }
+      else {
+        throw new ForbidenError ('Nie masz do tego uprawnień.');
+      }
+    }
+  );
+};
+
+export const verifyTokenAndAdmin = (
+  req:ExtendRequest, res: Response, next: NextFunction
+) => {
+  verifyToken (
+    req, res, () => {
+      console.log ((req.user as VerifyPayload).isAdmin);
+      if ((req.user as VerifyPayload).isAdmin) {
         next ();
       }
       else {

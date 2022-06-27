@@ -2,8 +2,7 @@ import { Router, } from 'express';
 import{ hash, } from 'bcryptjs';
 import { UserRecord, } from '../records/user.record';
 import { NotFoundError, ValidationError, } from '../utils/error';
-import { verifyTokenAndAuthorization, } from '../utils/verify';
-import { UserEntityWitoutPassword, } from '../types';
+import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
 
 export const userRouter = Router ();
 
@@ -37,9 +36,53 @@ userRouter
       user.email = req.body.email || user.email;
       user.password = password;
       user.isAdmin = Boolean (req.body.isAdmin);
-      user.updatedAt = Date.now ();
       
       await user.update ();
-      res.json ({ user, } as UserEntityWitoutPassword);
+      res.json ({ user, });
+    }
+  )
+  .delete (
+    '/:id', verifyTokenAndAdmin, async (
+      req, res
+    ) => {
+      const user = await UserRecord.getOneById (req.params.id);
+
+      if (!user) {
+        throw new ValidationError ('Niema takiego użytkownika');
+      }
+      await user.delete ();
+      res.status (204).end ();
+    }
+  )
+  .get (
+    '/find/:id', verifyTokenAndAuthorization, async (
+      req, res
+    ) => {
+      const user = await UserRecord.getOneById (req.params.id);
+
+      if (!user) {
+        throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
+      }
+      const { password, ...others } = user ;
+
+      res.json ({ others, } ) ;
+    }
+  )
+  .get (
+    '/', verifyTokenAndAdmin, async (
+      req, res
+    ) => {
+      const query= req.query.top as string;
+      const usersList = query ? await UserRecord.listNew (query): await UserRecord.listAll ();
+      res.json ({ usersList, });
+    }
+  )
+  
+  .get (
+    '/stats', verifyTokenAndAdmin, async (
+      req, res
+    ) => {
+      const stats = await UserRecord.getStatsUsers ();
+      res.json ( stats);
     }
   );

@@ -2,10 +2,11 @@ import { FieldPacket, } from 'mysql2/promise';
 import { v4 as uuid, } from 'uuid';
 
 import { pool, } from '../utils/db';
-import { UserEntity, } from '../types';
+import { UserEntity, UserStats, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 
 type UserRecordResult = [UserRecord[], FieldPacket[]];
+type UserStatsResult = [UserStats[], FieldPacket[]];
 
 export class UserRecord implements UserEntity {
   public id?: string;
@@ -83,14 +84,12 @@ export class UserRecord implements UserEntity {
 
   async insert(): Promise<UserRecord> {
     await pool.execute (
-      'INSERT INTO `users` VALUES(:id, :username, :email, :password, :isAdmin, :createdAt, :updatedAt)', {
-        id       : this.id,
-        username : this.username,
-        email    : this.email,
-        password : this.password,
-        isAdmin  : this.isAdmin,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+      'INSERT INTO `users` VALUES(:id, :username, :email, :password, :isAdmin, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())', {
+        id      : this.id,
+        username: this.username,
+        email   : this.email,
+        password: this.password,
+        isAdmin : this.isAdmin,
       }
     );
     return this as UserRecord;
@@ -111,23 +110,54 @@ export class UserRecord implements UserEntity {
   } 
 
   async update(): Promise<string> {
-
     if (!this.id) {
       throw new NotFoundError ('Brak id w zapytaniu');
     }
-    console.log (this);
     this._validate ();
     await pool.execute (
-      'UPDATE `users` SET `username`= :username,`email`=:email,`password`=:password,`isAdmin`=:isAdmin,`updatedAt`=:updatedAt WHERE `id`=:id', {
-        id       : this.id,
-        username : this.username,
-        email    : this.email,
-        password : this.password,
-        isAdmin  : this.isAdmin,
-        createdAt: this.createdAt,
-        updatedAt: Date.now (),
+      'UPDATE `users` SET `username`= :username,`email`=:email,`password`=:password,`isAdmin`=:isAdmin,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+        id      : this.id,
+        username: this.username,
+        email   : this.email,
+        password: this.password,
+        isAdmin : this.isAdmin,
       }
     );
     return this.id;
+  }
+
+  async delete(): Promise<string> {
+
+    if (!this.id) {
+      throw new NotFoundError ('Brak takiego id');
+    }
+    await pool.execute (
+      'DELETE FROM `users` WHERE `id`=:id', { id: this.id, }
+    );
+
+    return this.id;
+  }
+
+  static async listAll(): Promise<UserRecord[]> {
+    const [ results, ] = (await pool.execute ('SELECT * FROM `users` ORDER BY `username` ASC')) as UserRecordResult;
+    return results.map ((obj: UserRecord) => 
+      new UserRecord (obj));
+  }
+
+  static async listNew(topNew: string): Promise<UserRecord[]> {
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `users` ORDER BY `createdAt` DESC LIMIT :topNew', {
+        topNew,
+      }
+    )) as UserRecordResult;
+
+    return results.map (obj => 
+      new UserRecord (obj));
+  }
+
+  static async getStatsUsers(): Promise<UserStats[]> {
+    const [ results, ] = await pool.execute ('SELECT DATE_FORMAT(`createdAt`,"%Y.%m") AS id, COUNT(`id`) as total FROM `users` GROUP BY DATE_FORMAT(`createdAt`,"%Y.%m");') as UserStatsResult;
+    return results.map (obj => 
+      obj);
   }
 }

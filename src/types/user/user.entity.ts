@@ -15,8 +15,15 @@ export type RegisterUserRes = {
   email: string;
 }
 
-type UserEntityWitoutPassword = Omit<UserEntity, 'password'>
+export type UserEntityWitoutPasswordRes = Omit<UserEntity, 'password'>
 
-export interface LoginUserRes extends UserEntityWitoutPassword{
+export interface LoginUserRes extends UserEntityWitoutPasswordRes{
   accessToken: string
+}
+
+export type ListUsersRes = UserEntityWitoutPasswordRes[]
+
+export interface UserStats {
+  id: string,
+  total: number;
 }

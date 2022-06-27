@@ -58,7 +58,7 @@ app.use (
   '/api', router
 );
 
-app.use (handleError );
+// app.use (handleError );
 
 const PORT:number = config.PORT || 5000;
 
