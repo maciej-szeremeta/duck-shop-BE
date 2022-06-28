@@ -1,6 +1,7 @@
 import { FieldPacket, } from 'mysql2/promise';
 import { v4 as uuid, } from 'uuid';
 
+import { hrtime, } from 'process';
 import { pool, } from '../utils/db';
 import { ProductEntity, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
@@ -16,13 +17,17 @@ export class ProductRecord implements ProductEntity {
 
   public img: string;
 
-  public categories?: string;
+  public categoriesId?: string | null;
 
-  public size?: string;
+  public size?: string | null;
 
-  public color?: string;
+  public color?: string | null;
 
   public price: number;
+
+  public createdAt?: number | Date;
+
+  public updatedAt?: number | Date;
 
   constructor(obj: Omit<ProductEntity, 'insert' | 'update'>) {
 
@@ -30,13 +35,12 @@ export class ProductRecord implements ProductEntity {
     this.title = obj.title;
     this.description = obj.description;
     this.img = obj.img;
-    this.categories = obj.categories;
-    this.size = obj.size;
-    this.color = obj.color;
+    this.categoriesId = obj.categoriesId ?? null;
+    this.size = obj.size ?? null;
+    this.color = obj.color ?? null;
     this.price = obj.price;
-
-    //  this.createdAt= obj.createdAt ?? Date.now ();
-    //  this.updatedAt= obj.updatedAt ?? Date.now ();
+    this.createdAt= obj.createdAt ?? Date.now ();
+    this.updatedAt= obj.updatedAt ?? Date.now ();
 
     this._validate ();
   }
@@ -65,9 +69,9 @@ export class ProductRecord implements ProductEntity {
       throw new ValidationError ('Dodaj zdjęcie.');
     }
 
-    if (!this.price || this.price < 1 || this.price > 9999) {
-      throw new ValidationError ('Cena nie może być mniejsza niż 0 lub większa niż 9 999');
-    }
+    // if (!this.price || this.price < 1 || this.price > 9999) {
+    //   throw new ValidationError ('Cena nie może być mniejsza niż 0 lub większa niż 9 999');
+    // }
   }
 
   // * Sprawdzanie Unique Title WALIDACJA
@@ -76,5 +80,48 @@ export class ProductRecord implements ProductEntity {
       'SELECT * FROM `products` WHERE `title`=:title', { title, }
     )) as ProductRecordResult;
     return results.length > 0;
+  }
+
+  async insert(): Promise<ProductRecord> {
+    await pool.execute (
+      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :categoriesId, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+        id          : this.id,
+        title       : this.title,
+        description : this.description,
+        img         : this.img,
+        categoriesId: this.categoriesId,
+        size        : this.size,
+        color       : this.color,
+        price       : this.price,
+      }
+    );
+    return this as ProductRecord;
+  }
+
+  static async getOneById(id: string): Promise<ProductRecord | null> {
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `products` WHERE `id`=:id', { id, }
+    )) as ProductRecordResult;
+    return results.length === 0 ? null : new ProductRecord (results[ 0 ]);
+  } 
+
+  async update(): Promise<string> {
+    if (!this.id) {
+      throw new NotFoundError ('Brak id w zapytaniu');
+    }
+    this._validate ();
+    await pool.execute (
+      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`categoriesId`=:categoriesId,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+        id          : this.id,
+        title       : this.title,
+        description : this.description,
+        img         : this.img,
+        categoriesId: this.categoriesId,
+        size        : this.size,
+        color       : this.color,
+        price       : this.price,
+      }
+    );
+    return this.id;
   }
 }
