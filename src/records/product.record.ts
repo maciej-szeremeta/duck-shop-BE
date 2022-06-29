@@ -1,7 +1,5 @@
 import { FieldPacket, } from 'mysql2/promise';
 import { v4 as uuid, } from 'uuid';
-
-import { hrtime, } from 'process';
 import { pool, } from '../utils/db';
 import { ProductEntity, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
@@ -17,7 +15,7 @@ export class ProductRecord implements ProductEntity {
 
   public img: string;
 
-  public categoriesId?: string | null;
+  public categoryId?: string | null;
 
   public size?: string | null;
 
@@ -35,7 +33,7 @@ export class ProductRecord implements ProductEntity {
     this.title = obj.title;
     this.description = obj.description;
     this.img = obj.img;
-    this.categoriesId = obj.categoriesId ?? null;
+    this.categoryId = obj.categoryId ?? null;
     this.size = obj.size ?? null;
     this.color = obj.color ?? null;
     this.price = obj.price;
@@ -84,15 +82,15 @@ export class ProductRecord implements ProductEntity {
 
   async insert(): Promise<ProductRecord> {
     await pool.execute (
-      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :categoriesId, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
-        id          : this.id,
-        title       : this.title,
-        description : this.description,
-        img         : this.img,
-        categoriesId: this.categoriesId,
-        size        : this.size,
-        color       : this.color,
-        price       : this.price,
+      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :categoryId, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+        id         : this.id,
+        title      : this.title,
+        description: this.description,
+        img        : this.img,
+        categoryId : this.categoryId,
+        size       : this.size,
+        color      : this.color,
+        price      : this.price,
       }
     );
     return this as ProductRecord;
@@ -111,17 +109,31 @@ export class ProductRecord implements ProductEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`categoriesId`=:categoriesId,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
-        id          : this.id,
-        title       : this.title,
-        description : this.description,
-        img         : this.img,
-        categoriesId: this.categoriesId,
-        size        : this.size,
-        color       : this.color,
-        price       : this.price,
+      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`categoryId`=:categoryId,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+        id         : this.id,
+        title      : this.title,
+        description: this.description,
+        img        : this.img,
+        categoryId : this.categoryId,
+        size       : this.size,
+        color      : this.color,
+        price      : this.price,
       }
     );
     return this.id;
+  }
+
+  static async listAll(
+    topNew: string, category:string
+  ): Promise<ProductRecord[]> {
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `products` WHERE `categoryId` = :category ORDER BY `createdAt` DESC LIMIT :topNew ', {
+        topNew  : topNew || '100',
+        category: category || 'IS NOT NULL',
+      }
+    )) as ProductRecordResult;
+
+    return results.map (obj => 
+      new ProductRecord (obj));
   }
 }

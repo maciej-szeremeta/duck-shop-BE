@@ -4,7 +4,7 @@ export interface ProductEntity {
   title: string;
   description: string;
   img: string;
-  categoriesId?: string | null;
+  categoryId?: string | null;
   size?: string | null;
   color?: string | null;
   price: number;

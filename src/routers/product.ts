@@ -37,7 +37,7 @@ productRouter
 
 // @Update
   .patch (
-    '/:id', async (
+    '/:id', verifyTokenAndAdmin, async (
       req, res
     ) => {
       
@@ -52,13 +52,40 @@ productRouter
       product.title = req.body.title || product.title;
       product.description = req.body.description || product.description;
       product.img = req.body.img || product.img;
-      product.categoriesId = req.body.categoriesId || product.categoriesId;
+      product.categoryId = req.body.categoryId || product.categoryId;
       product.size = req.body.size || product.size;
       product.color = req.body.color || product.color;
       product.price = Number (req.body.price) || product.price;
       
       await product.update ();
       res.json ({ product, });
+    }
+  )
+
+// @Get
+  .get (
+    '/find/:id', async (
+      req, res
+    ) => {
+      const product = await ProductRecord.getOneById (req.params.id);
+
+      if (!product) {
+        throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
+      }
+
+      res.json ({ product, } ) ;
+    }
+  )
+  .get (
+    '/', async (
+      req, res
+    ) => {
+      const qNew= req.query.top as string;
+      const qCategory= req.query.category as string;
+      const productsList = await ProductRecord.listAll (
+        qNew, qCategory
+      );
+      res.json ({ productsList, });
     }
   );
 
@@ -73,29 +100,6 @@ productRouter
 //     }
 //     await user.delete ();
 //     res.status (204).end ();
-//   }
-// )
-// .get (
-//   '/find/:id', verifyTokenAndAuthorization, async (
-//     req, res
-//   ) => {
-//     const user = await UserRecord.getOneById (req.params.id);
-
-//     if (!user) {
-//       throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
-//     }
-//     const { password, ...others } = user ;
-
-//     res.json ({ others, } ) ;
-//   }
-// )
-// .get (
-//   '/', verifyTokenAndAdmin, async (
-//     req, res
-//   ) => {
-//     const query= req.query.top as string;
-//     const usersList = query ? await UserRecord.listNew (query): await UserRecord.listAll ();
-//     res.json ({ usersList, });
 //   }
 // )
   
