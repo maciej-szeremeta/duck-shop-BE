@@ -67,9 +67,9 @@ export class ProductRecord implements ProductEntity {
       throw new ValidationError ('Dodaj zdjęcie.');
     }
 
-    // if (!this.price || this.price < 1 || this.price > 9999) {
-    //   throw new ValidationError ('Cena nie może być mniejsza niż 0 lub większa niż 9 999');
-    // }
+    if (!this.price || this.price < 1 || this.price > 9999) {
+      throw new ValidationError ('Cena nie może być mniejsza niż 0 lub większa niż 9 999');
+    }
   }
 
   // * Sprawdzanie Unique Title WALIDACJA

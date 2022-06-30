@@ -2,7 +2,7 @@ import { Router, } from 'express';
 import { ProductRecord, } from '../records/product.record';
 import { CreateProductReq, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
-import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
+import { verifyTokenAndAdmin, } from '../utils/verify';
 
 export const productRouter = Router ();
 
@@ -76,6 +76,8 @@ productRouter
       res.json ({ product, } ) ;
     }
   )
+
+  // @Get All
   .get (
     '/', async (
       req, res
@@ -88,26 +90,3 @@ productRouter
       res.json ({ productsList, });
     }
   );
-
-// .delete (
-//   '/:id', verifyTokenAndAdmin, async (
-//     req, res
-//   ) => {
-//     const user = await UserRecord.getOneById (req.params.id);
-
-//     if (!user) {
-//       throw new ValidationError ('Niema takiego użytkownika');
-//     }
-//     await user.delete ();
-//     res.status (204).end ();
-//   }
-// )
-  
-// .get (
-//   '/stats', verifyTokenAndAdmin, async (
-//     req, res
-//   ) => {
-//     const stats = await UserRecord.getStatsUsers ();
-//     res.json ( stats);
-//   }
-// );
