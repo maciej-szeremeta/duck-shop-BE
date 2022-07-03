@@ -7,5 +7,12 @@ export interface OrderEntity {
   quantity: number;
   amount: number;
   address: string;
-  status: OrderStatus;
+  statusName: OrderStatus;
+  createdAt?: Date | number;
+  updatedAt? : Date | number;
+}
+
+export interface OrderStats {
+  id: string,
+  total: number;
 }

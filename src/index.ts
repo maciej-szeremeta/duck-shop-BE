@@ -19,6 +19,7 @@ import { userRouter, } from './routers/user';
 import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
 import { cartRouter, } from './routers/cart';
+import { orderRouter, } from './routers/order';
 
 const app = express ();
 
@@ -53,6 +54,9 @@ router.use (
 );
 router.use (
   '/cart', cartRouter
+);
+router.use (
+  '/order', orderRouter
 );
 app.use (
   '/api', router

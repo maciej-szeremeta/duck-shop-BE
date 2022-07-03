@@ -1,7 +1,7 @@
 import { Router, } from 'express';
 import { CartRecord, } from '../records/cart.record';
 import { CreateCartReq, } from '../types';
-import { verifyToken, verifyTokenAndAuthorization, } from '../utils/verify';
+import { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
 import { NotFoundError, ValidationError, } from '../utils/error';
 
 export const cartRouter = Router ();
@@ -10,7 +10,7 @@ cartRouter
 
 // @ Create
   .post (
-    '/', /* verifyToken, */ async (
+    '/', verifyToken, async (
       req, res
     ) => {
 
@@ -28,12 +28,11 @@ cartRouter
 
 // @Update
   .patch (
-    '/:id', /* verifyTokenAndAuthorization, */ async (
+    '/:id', verifyTokenAndAuthorization, async (
       req, res
     ) => {
       
       const cart = await CartRecord.getOneById (req.params.id);
-      console.log (cart);
       if (!cart) {
         throw new NotFoundError ('Brak takiego id');
       }
@@ -43,13 +42,13 @@ cartRouter
       cart.quantity = req.body.quantity || cart.quantity;
       
       await cart.update ();
-      res.json ({ product: cart, });
+      res.json ({ cart, });
     }
   )
 
   // @Delete Cart
   .delete (
-    '/:id', /* verifyTokenAndAuthorization, */ async (
+    '/:id', verifyTokenAndAuthorization, async (
       req, res
     ) => {
       const user = await CartRecord.getOneById (req.params.id);
@@ -64,22 +63,22 @@ cartRouter
 
 // @Get One product from cart
   .get (
-    '/find/:userid', /* verifyTokenAndAuthorization, */async (
+    '/find/:userId', verifyTokenAndAuthorization, async (
       req, res
     ) => {
-      const cart = await CartRecord.getOneCartByUserId (req.params.userid);
+      const cart = await CartRecord.getOneCartByUserId (req.params.userId);
 
       if (!cart) {
         throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
       }
 
-      res.json ({ product: cart, } ) ;
+      res.json ({ cart, } ) ;
     }
   )
 
 // @Get All carts
   .get (
-    '/', /* verifyTokenAndAdmin, */async (
+    '/', verifyTokenAndAdmin, async (
       req, res
     ) => {
       const cartsList = await CartRecord.listAll ();

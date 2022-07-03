@@ -3,7 +3,7 @@ import { v4 as uuid, } from 'uuid';
 import { pool, } from '../utils/db';
 import { CartEntity, } from '../types';
 
-import { NotFoundError, ValidationError, } from '../utils/error';
+import { NotFoundError, } from '../utils/error';
 
 type CartRecordResult = [CartRecord[], FieldPacket[]];
 
