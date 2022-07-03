@@ -1,5 +1,5 @@
 import { Router, } from 'express';
-import { ProductRecord, } from '../records/product.record';
+import { ProductRecord, } from '../records/products.record';
 import { CreateProductReq, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
@@ -19,19 +19,23 @@ productRouter
       }
 
       const newProduct = new ProductRecord ({
-        title       : req.body.title,
-        description : req.body.description,
-        img         : req.body.img,
-        categoriesId: req.body.categoriesId,
-        size        : req.body.size,
-        color       : req.body.color,
-        price       : Number (req.body.price),
+        title      : req.body.title,
+        description: req.body.description,
+        img        : req.body.img,
+        size       : req.body.size,
+        color      : req.body.color,
+        price      : Number (req.body.price),
         
       } as CreateProductReq);
         
       await newProduct.insert ();
+
+      const product= {
+        ...newProduct,
+        categories: [],
+      };
    
-      res.status (201).json ({ newProduct, });
+      res.status (201).json ({ product, });
     } 
   )
 
@@ -52,7 +56,6 @@ productRouter
       product.title = req.body.title || product.title;
       product.description = req.body.description || product.description;
       product.img = req.body.img || product.img;
-      product.categoryId = req.body.categoryId || product.categoryId;
       product.size = req.body.size || product.size;
       product.color = req.body.color || product.color;
       product.price = Number (req.body.price) || product.price;
@@ -75,18 +78,18 @@ productRouter
 
       res.json ({ product, } ) ;
     }
-  )
-
-  // @Get All
-  .get (
-    '/', async (
-      req, res
-    ) => {
-      const qNew= req.query.top as string;
-      const qCategory= req.query.category as string;
-      const productsList = await ProductRecord.listAll (
-        qNew, qCategory
-      );
-      res.json ({ productsList, });
-    }
   );
+
+// @Get All
+// .get (
+//   '/', async (
+//     req, res
+//   ) => {
+//     const qNew= req.query.top as string;
+//     const qCategory= req.query.category as string;
+//     const productsList = await ProductRecord.listAll (
+//       qNew, qCategory
+//     );
+//     res.json ({ productsList, });
+//   }
+// );

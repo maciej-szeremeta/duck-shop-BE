@@ -2,7 +2,7 @@ import { Router, } from 'express';
 import { compare, hash, } from 'bcryptjs';
 
 import { UnauthorizedError, ValidationError, } from '../utils/error';
-import { UserRecord, } from '../records/user.record';
+import { UserRecord, } from '../records/users.record';
 import { LoginUserRes, RegisterUserReq, RegisterUserRes, } from '../types';
 import { generateAccessToken, TokenPayload, } from '../utils/token';
 

@@ -15,8 +15,6 @@ export class ProductRecord implements ProductEntity {
 
   public img: string;
 
-  public categoryId?: string | null;
-
   public size?: string | null;
 
   public color?: string | null;
@@ -33,7 +31,6 @@ export class ProductRecord implements ProductEntity {
     this.title = obj.title;
     this.description = obj.description;
     this.img = obj.img;
-    this.categoryId = obj.categoryId ?? null;
     this.size = obj.size ?? null;
     this.color = obj.color ?? null;
     this.price = obj.price;
@@ -82,12 +79,11 @@ export class ProductRecord implements ProductEntity {
 
   async insert(): Promise<ProductRecord> {
     await pool.execute (
-      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :categoryId, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
         id         : this.id,
         title      : this.title,
         description: this.description,
         img        : this.img,
-        categoryId : this.categoryId,
         size       : this.size,
         color      : this.color,
         price      : this.price,
@@ -109,12 +105,11 @@ export class ProductRecord implements ProductEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`categoryId`=:categoryId,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
         id         : this.id,
         title      : this.title,
         description: this.description,
         img        : this.img,
-        categoryId : this.categoryId,
         size       : this.size,
         color      : this.color,
         price      : this.price,
@@ -123,17 +118,17 @@ export class ProductRecord implements ProductEntity {
     return this.id;
   }
 
-  static async listAll(
-    topNew: string, category:string
-  ): Promise<ProductRecord[]> {
-    const [ results, ] = (await pool.execute (
-      'SELECT * FROM `products` WHERE `categoryId` = :category ORDER BY `createdAt` DESC LIMIT :topNew ', {
-        topNew  : topNew || '100',
-        category: category || 'IS NOT NULL',
-      }
-    )) as ProductRecordResult;
+  // static async listAll(
+  //   topNew: string, category:string
+  // ): Promise<ProductRecord[]> {
+  //   const [ results, ] = (await pool.execute (
+  //     'SELECT * FROM `products` WHERE `categoryId` = :category ORDER BY `createdAt` DESC LIMIT :topNew ', {
+  //       topNew  : topNew || '100',
+  //       category: category || 'IS NOT NULL',
+  //     }
+  //   )) as ProductRecordResult;
 
-    return results.map (obj => 
-      new ProductRecord (obj));
-  }
+  //   return results.map (obj => 
+  //     new ProductRecord (obj));
+  // }
 }

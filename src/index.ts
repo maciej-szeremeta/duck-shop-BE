@@ -18,6 +18,7 @@ import { handleError, } from './utils/error';
 import { userRouter, } from './routers/user';
 import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
+import { productCategoriesRouter, } from './routers/productCategories';
 import { cartRouter, } from './routers/cart';
 import { orderRouter, } from './routers/order';
 
@@ -51,6 +52,9 @@ router.use (
 );
 router.use (
   '/product', productRouter
+);
+router.use (
+  '/product-categories', productCategoriesRouter
 );
 router.use (
   '/cart', cartRouter
