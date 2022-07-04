@@ -1,6 +1,7 @@
 import { Router, } from 'express';
+import { ListProductCategoriesRes, } from '../types/productCategories/productCategories';
 import { ProductCategoriesRecord, } from '../records/productCategories.record';
-import { CreateProductCategoriesReq, CreateProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
+import { CreateProductCategoriesReq, CreateProductCategoriesRes, ProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
@@ -46,7 +47,7 @@ productCategoriesRouter
 
       productCategories.name = req.body.name || productCategories.name;
 
-      await ProductCategoriesRecord.update ();
+      await productCategories.update ();
       
       res.json ({ productCategories, } as UpdateProductCategoriesRes);
     }
@@ -63,7 +64,7 @@ productCategoriesRouter
         throw new NotFoundError ('Nie odnaleziona takiej kategorii produktu.');
       }
 
-      res.json ({ productCategories, } ) ;
+      res.json ({ productCategories, } as ProductCategoriesRes) ;
     }
   )
 
@@ -73,6 +74,6 @@ productCategoriesRouter
       req, res
     ) => {
       const productCategoriesList = await ProductCategoriesRecord.listAll ();
-      res.json ({ productCategoriesList, });
+      res.json ({ productCategoriesList, } as ListProductCategoriesRes);
     }
   );

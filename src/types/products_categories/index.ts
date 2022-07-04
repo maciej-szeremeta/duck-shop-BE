@@ -1,0 +1,1 @@
+export * from './products_categories.entity';

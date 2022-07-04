@@ -11,3 +11,7 @@ export interface UpdateProductCategoriesRes
 {
       productCategories: ProductCategoriesEntity
 }
+
+export interface ProductCategoriesRes { productCategories: ProductCategoriesEntity };
+
+export interface ListProductCategoriesRes { productCategoriesList: ProductCategoriesEntity[] };
