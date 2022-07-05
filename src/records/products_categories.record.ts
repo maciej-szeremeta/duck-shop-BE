@@ -34,7 +34,7 @@ export class ProductsCategoriesRecord implements ProductsCategoriesEntity {
 
   static async getOneByProductId(productId: string): Promise<ProductsCategoriesRecord | null> {
     const [ results, ] = (await pool.execute (
-      'SELECT * FROM `products_Categories` WHERE `productId`=:productId', { productId, }
+      'SELECT * FROM `products_categories` WHERE `productId`=:productId', { productId, }
     )) as ProductsCategoriesRecordResult;
     return results.length === 0 ? null : new ProductsCategoriesRecord (results[ 0 ]);
   } 
@@ -48,6 +48,16 @@ export class ProductsCategoriesRecord implements ProductsCategoriesEntity {
     return results.map (obj => 
       new ProductsCategoriesRecord (obj));
   }
+
+  static async getOneByProductIdAndCategory(
+    productId: string, categoryName:string
+  ): Promise<ProductsCategoriesRecord | null> {
+    
+    const [ results, ] = (await pool.execute (
+      'SELECT * FROM `products_categories` WHERE `productId`=:productId AND `categoryName`=:categoryName', { productId, categoryName, }
+    )) as ProductsCategoriesRecordResult;
+    return results.length === 0 ? null : new ProductsCategoriesRecord (results[ 0 ]);
+  } 
 
   async delete(): Promise<number> {
 

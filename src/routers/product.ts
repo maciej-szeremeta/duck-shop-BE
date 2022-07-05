@@ -96,6 +96,15 @@ productRouter
         console.log (
           'add', add
         );
+
+        add.map (async (a: string) => {
+
+          const newProductsCategory = new ProductsCategoriesRecord ({
+            productId   : id,
+            categoryName: a,
+          });
+          await newProductsCategory.insert ();
+        });
       }
 
       const remove:string[] = xx.filter ((x:string) => 
@@ -105,6 +114,16 @@ productRouter
         console.log (
           'remove', remove
         );
+        remove.map (async (r: string) => {
+          const productCategory = await ProductsCategoriesRecord.getOneByProductIdAndCategory (
+            id, r
+          );
+          if (!productCategory) {
+            throw new ValidationError ('Niema takiego produktu');
+          }
+
+          await productCategory.delete ();
+        });
       }
 
       const productsCategories = await ProductsCategoriesRecord.listAll (id);
