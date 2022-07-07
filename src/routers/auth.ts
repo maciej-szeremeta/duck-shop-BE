@@ -10,7 +10,7 @@ export const authRouter = Router ();
 
 authRouter
 
-// @ Register
+// # Register User
   .post (
     '/register', async (
       req, res
@@ -41,7 +41,7 @@ authRouter
     } 
   )
 
-// @ Login
+// # Login Users
   .post (
     '/login', async (
       req, res
@@ -50,14 +50,10 @@ authRouter
       if (!req.body.username || !req.body.password) {
         throw new ValidationError ('Proszę wypełnić dane logowania');
       }
-
       const user = await UserRecord.getOneByUsername (req.body.username);
-
       if (!user) {
         throw new UnauthorizedError ('Błędne dane Logowania');
       }
-
-      // Sprawdzamy czy wpisane jest poprawne hasło
       const validPassword = await compare (
         req.body.password, user.password
       );
@@ -65,11 +61,8 @@ authRouter
       if (!validPassword) {
         throw new UnauthorizedError ('Błędne dane logowania hasło');
       }
-        
       const accessToken = generateAccessToken ({ id: user.id, isAdmin: user.isAdmin, } as TokenPayload);
-
       const { password, ...others } = user;
-
       res.json ({
         ...others,
         accessToken,

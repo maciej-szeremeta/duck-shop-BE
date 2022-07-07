@@ -118,17 +118,25 @@ export class ProductRecord implements ProductEntity {
     return this.id;
   }
 
-  // static async listAll(
-  //   topNew: string, category:string
-  // ): Promise<ProductRecord[]> {
-  //   const [ results, ] = (await pool.execute (
-  //     'SELECT * FROM `products` WHERE `categoryId` = :category ORDER BY `createdAt` DESC LIMIT :topNew ', {
-  //       topNew  : topNew || '100',
-  //       category: category || 'IS NOT NULL',
-  //     }
-  //   )) as ProductRecordResult;
+  static async listAll(
+    topNew: string, category:string
+  ): Promise<ProductRecord[]> {
+    const [ results, ] = (await pool.execute (
+      'SELECT `products`.* FROM `products` JOIN `products_categories` ON `products`.`id` = `products_categories`.`productId` WHERE `products_categories`.`categoryName` = :category ORDER BY `products`.`createdAt` DESC LIMIT :topNew;', { topNew: topNew || '100', category: category || 'IS NOT NULL', }
+    )) as ProductRecordResult;
+    return results.map (obj => 
+      new ProductRecord (obj));
+  }
 
-  //   return results.map (obj => 
-  //     new ProductRecord (obj));
-  // }
+  async delete(): Promise<string> {
+
+    if (!this.id) {
+      throw new NotFoundError ('Brak takiego id');
+    }
+    await pool.execute (
+      'DELETE FROM `products` WHERE `id`=:id', { id: this.id, }
+    );
+
+    return this.id;
+  }
 }

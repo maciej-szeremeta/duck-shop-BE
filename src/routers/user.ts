@@ -7,13 +7,13 @@ import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/veri
 export const userRouter = Router ();
 
 userRouter
+
+  // # Update User
   .patch (
     '/:id', verifyTokenAndAuthorization, async (
       req, res
     ) => {
-      
       const user = await UserRecord.getOneById (req.params.id);
-      
       if (!user) {
         throw new NotFoundError ('Brak takiego id');
       }
@@ -41,12 +41,13 @@ userRouter
       res.json ({ user, });
     }
   )
+
+  // # Remove User
   .delete (
     '/:id', verifyTokenAndAdmin, async (
       req, res
     ) => {
       const user = await UserRecord.getOneById (req.params.id);
-
       if (!user) {
         throw new ValidationError ('Niema takiego użytkownika');
       }
@@ -54,20 +55,22 @@ userRouter
       res.status (204).end ();
     }
   )
+
+  // # Get One User
   .get (
     '/find/:id', verifyTokenAndAuthorization, async (
       req, res
     ) => {
       const user = await UserRecord.getOneById (req.params.id);
-
       if (!user) {
         throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
       }
       const { password, ...others } = user ;
-
       res.json ({ others, } ) ;
     }
   )
+
+  // # Get Users List
   .get (
     '/', verifyTokenAndAdmin, async (
       req, res
@@ -77,7 +80,8 @@ userRouter
       res.json ({ usersList, });
     }
   )
-  
+
+  // # Get Users Stats
   .get (
     '/stats', verifyTokenAndAdmin, async (
       req, res

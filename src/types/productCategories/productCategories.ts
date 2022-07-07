@@ -7,10 +7,7 @@ export interface CreateProductCategoriesRes
       newProductCategories: ProductCategoriesEntity
 }
 
-export interface UpdateProductCategoriesRes
-{
-      productCategories: ProductCategoriesEntity
-}
+export interface UpdateProductCategoriesRes { productCategories: ProductCategoriesEntity}
 
 export interface ProductCategoriesRes { productCategories: ProductCategoriesEntity };
 

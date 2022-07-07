@@ -60,15 +60,12 @@ export class ProductsCategoriesRecord implements ProductsCategoriesEntity {
   } 
 
   async delete(): Promise<number> {
-
     if (!this.id) {
       throw new NotFoundError ('Brak takiego id');
     }
-    
     await pool.execute (
       'DELETE FROM `products_categories` WHERE `id`=:id', { id: this.id, }
     );
-
     return this.id;
   }
 }
