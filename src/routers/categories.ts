@@ -1,15 +1,15 @@
 import { Router, } from 'express';
 import { ListProductCategoriesRes, } from '../types/productCategories/productCategories';
-import { ProductCategoriesRecord, } from '../records/productCategories.record';
+import { ProductCategoriesRecord, } from '../records/categories.record';
 import { CreateProductCategoriesReq, CreateProductCategoriesRes, ProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
-export const productCategoriesRouter = Router ();
+export const categoriesRouter = Router ();
 
-productCategoriesRouter
+categoriesRouter
 
-// @ Create
+// # Create category
   .post (
     '/', verifyTokenAndAdmin, async (
       req, res
@@ -18,10 +18,8 @@ productCategoriesRouter
       if (await ProductCategoriesRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
-
       const newProductCategories = new ProductCategoriesRecord ({
         name: req.body.name,
-        
       } as CreateProductCategoriesReq);
         
       await newProductCategories.insert ();
@@ -30,7 +28,7 @@ productCategoriesRouter
     } 
   )
 
-// @Update
+// # Update category
   .patch (
     '/:id', verifyTokenAndAdmin, async (
       req, res
@@ -53,7 +51,7 @@ productCategoriesRouter
     }
   )
 
-// @Get
+// # Get One Category
   .get (
     '/find/:id', async (
       req, res
@@ -68,7 +66,7 @@ productCategoriesRouter
     }
   )
 
-// @Get All
+// # Get All categories
   .get (
     '/', async (
       req, res

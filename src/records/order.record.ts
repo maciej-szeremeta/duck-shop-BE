@@ -13,10 +13,6 @@ export class OrderRecord implements OrderEntity {
 
   public userId?: string;
 
-  public productId?: string;
-
-  public quantity = 1;
-
   public amount :number;
 
   public address :string;
@@ -31,8 +27,6 @@ export class OrderRecord implements OrderEntity {
 
     this.id = obj.id ?? uuid ();
     this.userId = obj.userId;
-    this.productId = obj.productId;
-    this.quantity = obj.quantity;
     this.amount = obj.amount;
     this.address = obj.address;
     this.statusName = obj.statusName ?? 'pending';
@@ -55,7 +49,7 @@ export class OrderRecord implements OrderEntity {
 
   async insert(): Promise<OrderRecord> {
     await pool.execute (
-      'INSERT INTO `orders` VALUES(:id, :userId, :productId, :quantity, :amount, :address, :statusName, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', this
+      'INSERT INTO `orders` VALUES(:id, :userId, :amount, :address, :statusName, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', this
     );
     return this as OrderRecord;
   }
@@ -105,7 +99,7 @@ export class OrderRecord implements OrderEntity {
   }
 
   static async getStatsOrders(): Promise<OrderStats[]> {
-    const [ results, ] = await pool.execute ('SELECT DATE_FORMAT(`createdAt`,"%Y.%m") AS id, COUNT(`id`) as total FROM `orders` GROUP BY DATE_FORMAT(`createdAt`,"%Y.%m");') as OrderStatsResult;
+    const [ results, ] = await pool.execute ('SELECT DATE_FORMAT(`createdAt`,"%Y.%m") AS id, SUM(`amount`) as total FROM `orders` GROUP BY DATE_FORMAT(`createdAt`,"%Y.%m");') as OrderStatsResult;
     return results.map (obj => 
       obj);
   }

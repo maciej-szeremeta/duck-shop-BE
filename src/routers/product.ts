@@ -1,5 +1,5 @@
 import { Router, } from 'express';
-import { ProductCategoriesRecord, } from '../records/productCategories.record';
+import { ProductCategoriesRecord, } from '../records/categories.record';
 import { ProductRecord, } from '../records/products.record';
 import { ProductsCategoriesRecord, } from '../records/products_categories.record';
 import { CreateProductReq, ListProductsRes, OneProductRes, } from '../types';
@@ -142,7 +142,7 @@ productRouter
         ...product,
         categories: productsCategories,
       };
-      res.json ({ oneProduct, }as OneProductRes ) ;
+      res.json ({ oneProduct, } as OneProductRes ) ;
     }
   )
 

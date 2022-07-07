@@ -8,7 +8,7 @@ export const cartRouter = Router ();
 
 cartRouter
 
-// @ Create
+// # Create Cart
   .post (
     '/', verifyToken, async (
       req, res
@@ -26,7 +26,7 @@ cartRouter
     } 
   )
 
-// @Update
+// # Update Cart
   .patch (
     '/:id', verifyTokenAndAuthorization, async (
       req, res
@@ -46,7 +46,7 @@ cartRouter
     }
   )
 
-  // @Delete Cart
+  // # Delete Cart
   .delete (
     '/:id', verifyTokenAndAuthorization, async (
       req, res
@@ -61,7 +61,7 @@ cartRouter
     }
   )
 
-// @Get One product from cart
+// # Get User's cart
   .get (
     '/find/:userId', verifyTokenAndAuthorization, async (
       req, res
@@ -76,7 +76,7 @@ cartRouter
     }
   )
 
-// @Get All carts
+// # Get all carts of Users
   .get (
     '/', verifyTokenAndAdmin, async (
       req, res

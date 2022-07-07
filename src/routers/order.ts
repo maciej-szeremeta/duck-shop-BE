@@ -1,39 +1,63 @@
 import { Router, } from 'express';
 import { OrderRecord, } from '../records/order.record';
+import { OrdersProductsRecord, } from '../records/orders_products.record';
 import { UserProductRecord, } from '../records/user_product.record';
-import { CreateOrderReq, CreateOrderRes, ListAllOrdersRes, ListUserOrdersRes, UpdateOrderRes, } from '../types';
+import { CreateOrderReq, ListAllOrdersRes, UpdateOrderRes, } from '../types';
 
 import { NotFoundError, ValidationError, } from '../utils/error';
-import { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
+
+import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
 
 export const orderRouter = Router ();
 
 orderRouter
 
-// @ Create Order
+// # Create Order
   .post (
     '/', /* verifyTokenAndAdmin, */ async (
       req, res
     ) => {
 
+      // * Create Order
       const newOrder = new OrderRecord ({
         userId    : req.body.userId,
-        productId : req.body.productId,
-        quantity  : req.body.quantity,
         amount    : req.body.amount,
         address   : req.body.address,
         statusName: req.body.statusName,
       } as CreateOrderReq);
         
-      await newOrder.insert ();
+      const { userId, } = await newOrder.insert ();
 
-      res.status (201).json ({ newOrder, });
+      // * Add productsList to order
+      const { products, } = req.body;
+
+      if (!userId) {
+        throw new NotFoundError ('Brak takiego id');
+      }
+      for await (const { productId, quantity, } of products) {
+
+        const newOrderProduct = new OrdersProductsRecord ({
+          userId,
+          productId,
+          quantity,
+        });
+        await newOrderProduct.insert ();
+      }
+
+      const ordersProducts = await OrdersProductsRecord.listAll (userId);
+
+      const order = {
+        ...newOrder,
+        products: ordersProducts,
+      };
+
+      res.status (201).json ({ order, });
     } 
   )
 
-// @Update
+// # Update Order
   .patch (
-    '/:id', /* verifyTokenAndAdmin, */ async (
+    '/:id', verifyTokenAndAdmin, async (
       req, res
     ) => {
       
@@ -43,8 +67,6 @@ orderRouter
       }
 
       order.userId = req.body.userId || order.userId;
-      order.productId = req.body.productId || order.productId;
-      order.quantity = req.body.quantity || order.quantity;
       order.amount = req.body.amount || order.amount;
       order.address = req.body.address || order.address;
       order.statusName = req.body.statusName || order.statusName;
@@ -54,9 +76,9 @@ orderRouter
     }
   )
 
-  // @Delete Order
+  // # Delete Order
   .delete (
-    '/:id', /* verifyTokenAndAdmin, */ async (
+    '/:id', verifyTokenAndAdmin, async (
       req, res
     ) => {
       const user = await OrderRecord.getOneById (req.params.id);
@@ -69,9 +91,9 @@ orderRouter
     }
   )
 
-// @Get User Orders
+// # Get User Order
   .get (
-    '/find/:userId', /* verifyTokenAndAuthorization, */async (
+    '/find/:userId', verifyTokenAndAuthorization, async (
       req, res
     ) => {
       const userOrderList = await OrderRecord.getOrderByUserId (req.params.userId);
@@ -80,7 +102,6 @@ orderRouter
         throw new NotFoundError ('Nie odnaleziona takiego zamówienia.');
       }
       const userProductsList = await UserProductRecord.getOrderByUserId (userOrderList.userId as string);
-      console.log (userProductsList);
       const order = {
         userId    : userOrderList.userId,
         product   : userProductsList,
@@ -92,9 +113,9 @@ orderRouter
     }
   )
 
-// @Get All Orders
+// # Get All Orders
   .get (
-    '/', /* verifyTokenAndAdmin, */async (
+    '/', /* verifyTokenAndAdmin, */ async (
       req, res
     ) => {
       const ordersList = await OrderRecord.listAll ();
@@ -102,7 +123,7 @@ orderRouter
     }
   )
 
-  // @Get Stats Orders
+  // # Get Stats Summary Order
   .get (
     '/income', /* verifyTokenAndAdmin, */ async (
       req, res

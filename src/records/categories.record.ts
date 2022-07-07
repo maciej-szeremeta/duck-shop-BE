@@ -39,14 +39,14 @@ export class ProductCategoriesRecord implements ProductCategoriesEntity {
   // * Sprawdzanie Unique Title WALIDACJA
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
-      'SELECT * FROM `productCategories` WHERE `name`=:name', { name, }
+      'SELECT * FROM `categories` WHERE `name`=:name', { name, }
     )) as ProductCategoriesRecordResult;
     return results.length > 0;
   }
 
   async insert(): Promise<ProductCategoriesRecord> {
     await pool.execute (
-      'INSERT INTO `productCategories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+      'INSERT INTO `categories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
         id  : this.id,
         name: this.name,
       }
@@ -56,7 +56,7 @@ export class ProductCategoriesRecord implements ProductCategoriesEntity {
 
   static async getOneById(id: string): Promise<ProductCategoriesRecord | null> {
     const [ results, ] = (await pool.execute (
-      'SELECT * FROM `productCategories` WHERE `id`=:id', { id, }
+      'SELECT * FROM `categories` WHERE `id`=:id', { id, }
     )) as ProductCategoriesRecordResult;
     return results.length === 0 ? null : new ProductCategoriesRecord (results[ 0 ]);
   } 
@@ -67,7 +67,7 @@ export class ProductCategoriesRecord implements ProductCategoriesEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `productCategories` SET `name`= :name,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+      'UPDATE `categories` SET `name`= :name,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
         id  : this.id,
         name: this.name,
       }
@@ -76,7 +76,7 @@ export class ProductCategoriesRecord implements ProductCategoriesEntity {
   }
   
   static async listAll(): Promise<ProductCategoriesRecord[]> {
-    const [ results, ] = (await pool.execute ('SELECT * FROM `productCategories` ORDER BY `name` DESC;')) as ProductCategoriesRecordResult;
+    const [ results, ] = (await pool.execute ('SELECT * FROM `categories` ORDER BY `name` DESC;')) as ProductCategoriesRecordResult;
     return results.map (obj => 
       new ProductCategoriesRecord (obj));
   }
