@@ -52,13 +52,10 @@ export class UserRecord implements UserEntity {
     ) {
       throw new ValidationError ('Email jest wymagany.');
     }
-     
     const emailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
     if (!emailRegExp.test (this.email)) {
       throw new ValidationError ('Email musi być poprawny');
     }
-
     if (
       !this.password || this.password.trim ().length <= 6
     ) {
@@ -66,7 +63,7 @@ export class UserRecord implements UserEntity {
     }
   }
 
-  // * Sprawdzanie Unique UserName  WALIDACJA
+  // ! Sprawdzanie Unique userName  WALIDACJA
   static async isUserNameTaken(username: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `users` WHERE `username`=:username', { username, }
@@ -74,7 +71,7 @@ export class UserRecord implements UserEntity {
     return results.length > 0;
   }
 
-  // * Sprawdzanie Unique Email WALIDACJA
+  // ! Sprawdzanie Unique Email WALIDACJA
   static async isEmailTaken(email: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `users` WHERE `email`=:email', { email, }
@@ -82,6 +79,7 @@ export class UserRecord implements UserEntity {
     return results.length > 0;
   }
 
+  // # Add User
   async insert(): Promise<UserRecord> {
     await pool.execute (
       'INSERT INTO `users` VALUES(:id, :username, :email, :password, :isAdmin, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())', {
@@ -95,6 +93,7 @@ export class UserRecord implements UserEntity {
     return this as UserRecord;
   }
 
+  // # Get One By UserName
   static async getOneByUsername(username: string): Promise<UserRecord | null> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `users` WHERE `username`=:username', { username, }
@@ -102,6 +101,7 @@ export class UserRecord implements UserEntity {
     return results.length === 0 ? null : new UserRecord (results[ 0 ]);
   } 
 
+  // # Get One By Id
   static async getOneById(id: string): Promise<UserRecord | null> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `users` WHERE `id`=:id', { id, }
@@ -109,6 +109,7 @@ export class UserRecord implements UserEntity {
     return results.length === 0 ? null : new UserRecord (results[ 0 ]);
   } 
 
+  // # Update User
   async update(): Promise<string> {
     if (!this.id) {
       throw new NotFoundError ('Brak id w zapytaniu');
@@ -126,31 +127,31 @@ export class UserRecord implements UserEntity {
     return this.id;
   }
 
+  // # Delete User
   async delete(): Promise<string> {
-
     if (!this.id) {
       throw new NotFoundError ('Brak takiego id');
     }
     await pool.execute (
       'DELETE FROM `users` WHERE `id`=:id', { id: this.id, }
     );
-
     return this.id;
   }
 
+  // # All Users
   static async listAll(): Promise<UserRecord[]> {
     const [ results, ] = (await pool.execute ('SELECT * FROM `users` ORDER BY `username` ASC')) as UserRecordResult;
     return results.map ((obj: UserRecord) => 
       new UserRecord (obj));
   }
 
+  // # List New Users
   static async listNew(topNew: string): Promise<UserRecord[]> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `users` ORDER BY `createdAt` DESC LIMIT :topNew', {
         topNew,
       }
     )) as UserRecordResult;
-
     return results.map (obj => 
       new UserRecord (obj));
   }

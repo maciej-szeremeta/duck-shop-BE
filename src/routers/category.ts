@@ -1,6 +1,6 @@
 import { Router, } from 'express';
 import { ListProductCategoriesRes, } from '../types/category/category';
-import { ProductCategoriesRecord, } from '../records/categories.record';
+import { CategoryRecord, } from '../records/categories.record';
 import { CreateProductCategoriesReq, CreateProductCategoriesRes, ProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
@@ -15,10 +15,10 @@ categoryRouter
       req, res
     ) => {
 
-      if (await ProductCategoriesRecord.isNameTaken (req.body.name)) {
+      if (await CategoryRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
-      const newProductCategories = new ProductCategoriesRecord ({
+      const newProductCategories = new CategoryRecord ({
         name: req.body.name,
       } as CreateProductCategoriesReq);
         
@@ -34,12 +34,12 @@ categoryRouter
       req, res
     ) => {
       
-      const productCategories = await ProductCategoriesRecord.getOneById (req.params.id);
+      const productCategories = await CategoryRecord.getOneById (req.params.id);
       
       if (!productCategories) {
         throw new NotFoundError ('Brak takiego id');
       }
-      if (await ProductCategoriesRecord.isNameTaken (req.body.name)) {
+      if (await CategoryRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
 
@@ -56,7 +56,7 @@ categoryRouter
     '/find/:id', async (
       req, res
     ) => {
-      const productCategories = await ProductCategoriesRecord.getOneById (req.params.id);
+      const productCategories = await CategoryRecord.getOneById (req.params.id);
 
       if (!productCategories) {
         throw new NotFoundError ('Nie odnaleziona takiej kategorii produktu.');
@@ -71,7 +71,7 @@ categoryRouter
     '/', async (
       req, res
     ) => {
-      const productCategoriesList = await ProductCategoriesRecord.listAll ();
+      const productCategoriesList = await CategoryRecord.listAll ();
       res.json ({ productCategoriesList, } as ListProductCategoriesRes);
     }
   );

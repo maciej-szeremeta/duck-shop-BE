@@ -4,9 +4,9 @@ import { pool, } from '../utils/db';
 import { CategoryEntity, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 
-type ProductCategoriesRecordResult = [ProductCategoriesRecord[], FieldPacket[]];
+type CategoryRecordResult = [CategoryRecord[], FieldPacket[]];
 
-export class ProductCategoriesRecord implements CategoryEntity {
+export class CategoryRecord implements CategoryEntity {
   public id?: string;
   
   public name: string;
@@ -40,25 +40,25 @@ export class ProductCategoriesRecord implements CategoryEntity {
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `categories` WHERE `name`=:name', { name, }
-    )) as ProductCategoriesRecordResult;
+    )) as CategoryRecordResult;
     return results.length > 0;
   }
 
-  async insert(): Promise<ProductCategoriesRecord> {
+  async insert(): Promise<CategoryRecord> {
     await pool.execute (
       'INSERT INTO `categories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
         id  : this.id,
         name: this.name,
       }
     );
-    return this as ProductCategoriesRecord;
+    return this as CategoryRecord;
   }
 
-  static async getOneById(id: string): Promise<ProductCategoriesRecord | null> {
+  static async getOneById(id: string): Promise<CategoryRecord | null> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `categories` WHERE `id`=:id', { id, }
-    )) as ProductCategoriesRecordResult;
-    return results.length === 0 ? null : new ProductCategoriesRecord (results[ 0 ]);
+    )) as CategoryRecordResult;
+    return results.length === 0 ? null : new CategoryRecord (results[ 0 ]);
   } 
   
   async update(): Promise<string> {
@@ -75,9 +75,9 @@ export class ProductCategoriesRecord implements CategoryEntity {
     return this.id;
   }
   
-  static async listAll(): Promise<ProductCategoriesRecord[]> {
-    const [ results, ] = (await pool.execute ('SELECT * FROM `categories` ORDER BY `name` DESC;')) as ProductCategoriesRecordResult;
+  static async listAll(): Promise<CategoryRecord[]> {
+    const [ results, ] = (await pool.execute ('SELECT * FROM `categories` ORDER BY `name` DESC;')) as CategoryRecordResult;
     return results.map (obj => 
-      new ProductCategoriesRecord (obj));
+      new CategoryRecord (obj));
   }
 }

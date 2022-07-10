@@ -1,5 +1,5 @@
 import { Router, } from 'express';
-import { ProductCategoriesRecord, } from '../records/categories.record';
+import { CategoryRecord, } from '../records/categories.record';
 import { ProductRecord, } from '../records/products.record';
 import { ProductsCategoriesRecord, } from '../records/products_categories.record';
 import { CreateProductReq, ListProductsRes, OneProductRes, } from '../types';
@@ -25,7 +25,7 @@ productRouter
         description: req.body.description,
         img        : req.body.img,
         size       : req.body.size,
-        color      : req.body.color,
+        colorId    : req.body.colorId,
         price      : Number (req.body.price),
         inStock    : req.body.inStock,
         
@@ -37,14 +37,6 @@ productRouter
       if (!id) {
         throw new NotFoundError ('Brak takiego id');
       }
-
-      // await Promise.all (categories.map (async (category: string) => {
-      //   const newProductCategory = new ProductsCategoriesRecord ({
-      //     productId   : id,
-      //     categoryName: category,
-      //   });
-      //   await newProductCategory.insert ();
-      // }));
       for await (const category of categories) {
         const newProductCategory = new ProductsCategoriesRecord ({
           productId   : id,
@@ -80,7 +72,7 @@ productRouter
       product.description = req.body.description || product.description;
       product.img = req.body.img || product.img;
       product.size = req.body.size || product.size;
-      product.color = req.body.color || product.color;
+      product.colorId = req.body.colorId || product.colorId;
       product.price = Number (req.body.price) || product.price;
       product.inStock = req.body.inStock || product.inStock;
       const id = await product.update ();
@@ -91,11 +83,11 @@ productRouter
         throw new NotFoundError ('Brak takiego id category');
       }
       const data = await ProductsCategoriesRecord.listAll (id);
-      const xx = data.map (({ categoryName, }) => 
+      const categoryNames = data.map (({ categoryName, }) => 
         categoryName);
      
       const add:string[] = categories.filter ((x:string) => 
-        !xx.includes (x));      
+        !categoryNames.includes (x));      
       if (add.length > 0) {
         add.map (async (a: string) => {
           const newProductsCategory = new ProductsCategoriesRecord ({
@@ -106,7 +98,7 @@ productRouter
         });
       }
 
-      const remove:string[] = xx.filter ((x:string) => 
+      const remove:string[] = categoryNames.filter ((x:string) => 
         !categories.includes (x));
       if (remove.length > 0) {
         remove.map (async (r: string) => {
@@ -158,7 +150,7 @@ productRouter
       const productsList = await ProductRecord.listAll (
         qNew, qCategory
       );
-      const categoriesList = await ProductCategoriesRecord.listAll ();
+      const categoriesList = await CategoryRecord.listAll ();
  
       res.json ({ productsList, categoriesList, } as ListProductsRes);
     }
@@ -170,10 +162,10 @@ productRouter
       req, res
     ) => {
 
-      // * Remove of all product categories
+      // * Delete all product categories
       const productsCategories = await ProductsCategoriesRecord.listAll (req.params.id);
       if (!productsCategories) {
-        throw new ValidationError ('Niema takiego użytkownika');
+        throw new ValidationError ('Nie ma takiego użytkownika');
       }
       for await (const { productId, } of productsCategories) {
         const productsCategoriesItem = await ProductsCategoriesRecord.getOneByProductId (productId);
@@ -183,7 +175,7 @@ productRouter
         await productsCategoriesItem.delete ();
       }
       
-      // * Remove product
+      // * Delete product
       const product = await ProductRecord.getOneById (req.params.id);
       if (!product) {
         throw new ValidationError ('Brak takiego produktu');

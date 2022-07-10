@@ -1,4 +1,4 @@
-import { ProductCategoriesEntity, } from '../category';
+import { CategoryEntity, } from '../category';
 import { ProductEntity, } from './product.entity';
 
 export type CreateProductReq = Omit<ProductEntity, 'id' | 'createdAt' | 'updatedAt'>;
@@ -9,5 +9,5 @@ export interface OneProductRes { oneProduct: ProductEntity }
 
 export interface ListProductsRes {
   productsList: ProductEntity[];
-  categoriesList: ProductCategoriesEntity[];
+  categoriesList: CategoryEntity[];
 }

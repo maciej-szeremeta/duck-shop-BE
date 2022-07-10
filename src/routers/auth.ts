@@ -20,7 +20,7 @@ authRouter
         throw new ValidationError (`Email ${req.body.email} jest zajęte. Wybierz inny email.`);
       }
       if (await UserRecord.isUserNameTaken (req.body.username)) {
-        throw new ValidationError (`Nazwa użytkownika ${req.body.username} jest zajęta. Wybierz inny.`);
+        throw new ValidationError (`Nazwa użytkownika ${req.body.username} jest zajęta. Wybierz inną nazwę.`);
       }
       const saltAndHashPassword = await hash (
         req.body.password, 10
@@ -52,14 +52,14 @@ authRouter
       }
       const user = await UserRecord.getOneByUsername (req.body.username);
       if (!user) {
-        throw new UnauthorizedError ('Błędne dane Logowania');
+        throw new UnauthorizedError ('Hasło lub login jest błędny.');
       }
       const validPassword = await compare (
         req.body.password, user.password
       );
       console.log (validPassword);
       if (!validPassword) {
-        throw new UnauthorizedError ('Błędne dane logowania hasło');
+        throw new UnauthorizedError ('Hasło lub login jest błędny.');
       }
       const accessToken = generateAccessToken ({ id: user.id, isAdmin: user.isAdmin, } as TokenPayload);
       const { password, ...others } = user;

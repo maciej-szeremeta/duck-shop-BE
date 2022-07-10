@@ -3,12 +3,14 @@ import{ hash, } from 'bcryptjs';
 import { UserRecord, } from '../records/users.record';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
+import { ListUsersRes, UserRes, UpdateUserRes, StatsUsers, } from '../types';
 
 export const userRouter = Router ();
 
 userRouter
 
   // # Update User
+  // @ Auth User
   .patch (
     '/:id', verifyTokenAndAuthorization, async (
       req, res
@@ -21,7 +23,7 @@ userRouter
         throw new ValidationError (`Email ${req.body.email} jest zajęte. Wybierz inny email.`);
       }
       if (req.body.username && await UserRecord.isUserNameTaken (req.body.username)) {
-        throw new ValidationError (`Nazwa użytkownika ${req.body.username} jest zajęta. Wybierz inny.`);
+        throw new ValidationError (`Nazwa użytkownika ${req.body.username} jest zajęta. Wybierz inną nazwę.`);
       }
       let password;
       if (!req.body.password) {
@@ -38,11 +40,13 @@ userRouter
       user.isAdmin = Boolean (req.body.isAdmin);
       
       await user.update ();
-      res.json ({ user, });
+      const { isAdmin, ...others } = user;
+      res.json ({ others, } as UpdateUserRes);
     }
   )
 
   // # Remove User
+  // @ Auth Admin
   .delete (
     '/:id', verifyTokenAndAdmin, async (
       req, res
@@ -57,6 +61,7 @@ userRouter
   )
 
   // # Get One User
+  // @Auth User
   .get (
     '/find/:id', verifyTokenAndAuthorization, async (
       req, res
@@ -66,27 +71,29 @@ userRouter
         throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
       }
       const { password, ...others } = user ;
-      res.json ({ others, } ) ;
+      res.json ({ others, } as UserRes) ;
     }
   )
 
   // # Get Users List
+  // @ Admin
   .get (
     '/', verifyTokenAndAdmin, async (
       req, res
     ) => {
       const query= req.query.top as string;
       const usersList = query ? await UserRecord.listNew (query): await UserRecord.listAll ();
-      res.json ({ usersList, });
+      res.json ({ usersList, } as ListUsersRes);
     }
   )
 
   // # Get Users Stats
+  // @ Admin
   .get (
     '/stats', verifyTokenAndAdmin, async (
       req, res
     ) => {
-      const stats = await UserRecord.getStatsUsers ();
-      res.json ( stats);
+      const statsUsers = await UserRecord.getStatsUsers ();
+      res.json (statsUsers as StatsUsers);
     }
   );
