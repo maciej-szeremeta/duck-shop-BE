@@ -1,14 +1,11 @@
 import { CategoryEntity, } from './category.entity';
 
-export type CreateProductCategoriesReq = Omit<CategoryEntity, 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateCategoryReq = Omit<CategoryEntity, 'id' | 'createdAt' | 'updatedAt'>;
 
-export interface CreateProductCategoriesRes
-{
-      newProductCategories: CategoryEntity
-}
+export interface CreateCategoryRes{ newCategory: CategoryEntity}
 
-export interface UpdateProductCategoriesRes { productCategories: CategoryEntity}
+export interface UpdateCategoryRes { category: CategoryEntity}
 
-export interface ProductCategoriesRes { productCategories: CategoryEntity };
+export interface ProductCategoryRes { category: CategoryEntity };
 
-export interface ListProductCategoriesRes { productCategoriesList: CategoryEntity[] };
+export interface ListCategoriesRes { categoriesList: CategoryEntity[] };

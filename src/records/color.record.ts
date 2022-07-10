@@ -36,7 +36,7 @@ export class ColorRecord implements ColorEntity {
     }
   }
   
-  // * Sprawdzanie Unique Color WALIDACJA
+  // # Sprawdzanie Unique Color WALIDACJA
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `colors` WHERE `name`=:name', { name, }
@@ -44,6 +44,7 @@ export class ColorRecord implements ColorEntity {
     return results.length > 0;
   }
 
+  // # Create Color
   async insert(): Promise<ColorRecord> {
     await pool.execute (
       'INSERT INTO `colors` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
@@ -54,6 +55,7 @@ export class ColorRecord implements ColorEntity {
     return this as ColorRecord;
   }
 
+  // # Get One Color By Id
   static async getOneById(id: string): Promise<ColorRecord | null> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `colors` WHERE `id`=:id', { id, }
@@ -61,6 +63,7 @@ export class ColorRecord implements ColorEntity {
     return results.length === 0 ? null : new ColorRecord (results[ 0 ]);
   } 
   
+  // # Update Color
   async update(): Promise<string> {
     if (!this.id) {
       throw new NotFoundError ('Brak id w zapytaniu');
@@ -74,7 +77,8 @@ export class ColorRecord implements ColorEntity {
     );
     return this.id;
   }
-  
+
+  // # Get All Colors
   static async listAll(): Promise<ColorRecord[]> {
     const [ results, ] = (await pool.execute ('SELECT * FROM `colors` ORDER BY `name` DESC;')) as ColorRecordResult;
     return results.map (obj => 

@@ -8,12 +8,12 @@ export const colorRouter = Router ();
 
 colorRouter
 
-// # Create color
+  // # Create color
+  // @ Admin
   .post (
     '/', verifyTokenAndAdmin, async (
       req, res
     ) => {
-
       if (await ColorRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kolor ${req.body.name} znajduje się już w bazie.`);
       }
@@ -25,7 +25,8 @@ colorRouter
     } 
   )
 
-// # Update color
+  // # Update color
+  // @ Admin
   .patch (
     '/:id', verifyTokenAndAdmin, async (
       req, res
@@ -44,22 +45,22 @@ colorRouter
     }
   )
 
-// # Get One Color
+  // # Get One Color
+  // @ All
   .get (
     '/find/:id', async (
       req, res
     ) => {
       const color = await ColorRecord.getOneById (req.params.id);
-
       if (!color) {
         throw new NotFoundError ('Nie odnaleziona takiej kategorii produktu.');
       }
-
       res.json ({ color, } as ColorRes) ;
     }
   )
 
-// # Get All categories
+  // # Get All categories
+  // @ All
   .get (
     '/', async (
       req, res

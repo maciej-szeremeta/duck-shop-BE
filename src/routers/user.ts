@@ -1,6 +1,6 @@
 import { Router, } from 'express';
 import{ hash, } from 'bcryptjs';
-import { UserRecord, } from '../records/users.record';
+import { UserRecord, } from '../records/user.record';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
 import { ListUsersRes, UserRes, UpdateUserRes, StatsUsers, } from '../types';

@@ -36,7 +36,7 @@ export class CategoryRecord implements CategoryEntity {
     }
   }
   
-  // * Sprawdzanie Unique Title WALIDACJA
+  // # Sprawdzanie Unique Title WALIDACJA
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `categories` WHERE `name`=:name', { name, }
@@ -44,6 +44,7 @@ export class CategoryRecord implements CategoryEntity {
     return results.length > 0;
   }
 
+  // # Add Category
   async insert(): Promise<CategoryRecord> {
     await pool.execute (
       'INSERT INTO `categories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
@@ -54,6 +55,7 @@ export class CategoryRecord implements CategoryEntity {
     return this as CategoryRecord;
   }
 
+  // # Get One Category
   static async getOneById(id: string): Promise<CategoryRecord | null> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `categories` WHERE `id`=:id', { id, }
@@ -61,6 +63,7 @@ export class CategoryRecord implements CategoryEntity {
     return results.length === 0 ? null : new CategoryRecord (results[ 0 ]);
   } 
   
+  // # Update Category
   async update(): Promise<string> {
     if (!this.id) {
       throw new NotFoundError ('Brak id w zapytaniu');
@@ -75,6 +78,7 @@ export class CategoryRecord implements CategoryEntity {
     return this.id;
   }
   
+  // # List Categories
   static async listAll(): Promise<CategoryRecord[]> {
     const [ results, ] = (await pool.execute ('SELECT * FROM `categories` ORDER BY `name` DESC;')) as CategoryRecordResult;
     return results.map (obj => 

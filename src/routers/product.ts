@@ -1,8 +1,9 @@
 import { Router, } from 'express';
-import { CategoryRecord, } from '../records/categories.record';
+import { CategoryRecord, } from '../records/category.record';
+import { ColorRecord, } from '../records/color.record';
 import { ProductRecord, } from '../records/products.record';
 import { ProductsCategoriesRecord, } from '../records/products_categories.record';
-import { CreateProductReq, ListProductsRes, OneProductRes, } from '../types';
+import { CreateProductReq, CreateProductWithCategoriesRes, ListProductsRes, OneProductRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
@@ -10,7 +11,8 @@ export const productRouter = Router ();
 
 productRouter
 
-// # Create a new product
+  // # Create a new product
+  // @ Admin
   .post (
     '/', verifyTokenAndAdmin, async (
       req, res
@@ -50,11 +52,12 @@ productRouter
         categories: productsCategories,
       };
    
-      res.status (201).json ({ product, });
+      res.status (201).json (product as CreateProductWithCategoriesRes );
     } 
   )
 
-// # Update product and product categoriesList
+  // # Update product and product categoriesList
+  // @ Admin
   .patch (
     '/:id', verifyTokenAndAdmin, async (
       req, res
@@ -65,9 +68,9 @@ productRouter
       }
 
       //  * Update product
-      // if (await ProductRecord.isTitleTaken (req.body.title)) {
-      //   throw new ValidationError (`Produkt ${req.body.title} znajduje się w bazie.`);
-      // }
+      if (req.body.title && await ProductRecord.isTitleTaken (req.body.title)) {
+        throw new ValidationError (`Produkt ${req.body.title} znajduje się w bazie.`);
+      }
       product.title = req.body.title || product.title;
       product.description = req.body.description || product.description;
       product.img = req.body.img || product.img;
@@ -75,8 +78,9 @@ productRouter
       product.colorId = req.body.colorId || product.colorId;
       product.price = Number (req.body.price) || product.price;
       product.inStock = req.body.inStock || product.inStock;
+
       const id = await product.update ();
-      
+
       // * Update product categoriesList
       const { categories, } = req.body;
       if (!id) {
@@ -89,29 +93,28 @@ productRouter
       const add:string[] = categories.filter ((x:string) => 
         !categoryNames.includes (x));      
       if (add.length > 0) {
-        add.map (async (a: string) => {
+        for await (const a of add) {
           const newProductsCategory = new ProductsCategoriesRecord ({
             productId   : id,
             categoryName: a,
           });
           await newProductsCategory.insert ();
-        });
+        }
       }
 
       const remove:string[] = categoryNames.filter ((x:string) => 
         !categories.includes (x));
       if (remove.length > 0) {
-        remove.map (async (r: string) => {
+        for await (const r of remove) {
           const productCategory = await ProductsCategoriesRecord.getOneByProductIdAndCategory (
             id, r
           );
           if (!productCategory) {
-            throw new ValidationError ('Niema takiego produktu');
+            throw new ValidationError ('Nie ma takiego produktu');
           }
           await productCategory.delete ();
-        });
+        }
       }
-
       const productsCategories = await ProductsCategoriesRecord.listAll (id);
       
       const updateProduct = {
@@ -122,7 +125,8 @@ productRouter
     }
   )
 
-// # Get One Product
+  // # Get One Product
+  // @ All
   .get (
     '/find/:id', async (
       req, res
@@ -140,7 +144,8 @@ productRouter
     }
   )
 
-  // # Get all filtered product
+  // # Get All Filtered products
+  // @ All
   .get (
     '/', async (
       req, res
@@ -151,12 +156,14 @@ productRouter
         qNew, qCategory
       );
       const categoriesList = await CategoryRecord.listAll ();
+      const colorsList = await ColorRecord.listAll ();
  
-      res.json ({ productsList, categoriesList, } as ListProductsRes);
+      res.json ({ productsList, categoriesList, colorsList, } as ListProductsRes);
     }
   )
 
   // # Delete product and all product categories
+  // @ Admin
   .delete (
     '/:id', verifyTokenAndAdmin, async (
       req, res

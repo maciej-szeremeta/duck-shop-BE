@@ -1,7 +1,6 @@
 import { Router, } from 'express';
-import { ListProductCategoriesRes, } from '../types/category/category';
-import { CategoryRecord, } from '../records/categories.record';
-import { CreateProductCategoriesReq, CreateProductCategoriesRes, ProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
+import { CreateCategoryReq, CreateCategoryRes, ListCategoriesRes, ProductCategoryRes, UpdateCategoryRes, } from '../types';
+import { CategoryRecord, } from '../records/category.record';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
@@ -10,68 +9,69 @@ export const categoryRouter = Router ();
 categoryRouter
 
 // # Create category
+// @ Admin
   .post (
     '/', verifyTokenAndAdmin, async (
       req, res
     ) => {
-
       if (await CategoryRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
-      const newProductCategories = new CategoryRecord ({
+      const newCategory = new CategoryRecord ({
         name: req.body.name,
-      } as CreateProductCategoriesReq);
-        
-      await newProductCategories.insert ();
-   
-      res.status (201).json ({ newProductCategories, } as CreateProductCategoriesRes);
+      } as CreateCategoryReq);        
+      await newCategory.insert ();   
+      res.status (201).json ({ newCategory, } as CreateCategoryRes);
     } 
   )
 
 // # Update category
+// @ Admin
   .patch (
     '/:id', verifyTokenAndAdmin, async (
       req, res
     ) => {
       
-      const productCategories = await CategoryRecord.getOneById (req.params.id);
+      const category = await CategoryRecord.getOneById (req.params.id);
       
-      if (!productCategories) {
+      if (!category) {
         throw new NotFoundError ('Brak takiego id');
       }
       if (await CategoryRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
 
-      productCategories.name = req.body.name || productCategories.name;
+      category.name = req.body.name || category.name;
 
-      await productCategories.update ();
+      await category.update ();
       
-      res.json ({ productCategories, } as UpdateProductCategoriesRes);
+      res.json ({ category, } as UpdateCategoryRes);
     }
   )
 
 // # Get One Category
+// @ All
   .get (
     '/find/:id', async (
       req, res
     ) => {
-      const productCategories = await CategoryRecord.getOneById (req.params.id);
+      const category = await CategoryRecord.getOneById (req.params.id);
 
-      if (!productCategories) {
+      if (!category) {
         throw new NotFoundError ('Nie odnaleziona takiej kategorii produktu.');
       }
 
-      res.json ({ productCategories, } as ProductCategoriesRes) ;
+      res.json ({ category, } as ProductCategoryRes) ;
     }
   )
 
 // # Get All categories
+// @ All
   .get (
     '/', async (
       req, res
     ) => {
-      const productCategoriesList = await CategoryRecord.listAll ();
-      res.json ({ productCategoriesList, } as ListProductCategoriesRes);
+      const categoriesList = await CategoryRecord.listAll ();
+      res.json ({ categoriesList, } as ListCategoriesRes);
     }
   );
