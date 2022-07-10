@@ -7,6 +7,7 @@ export interface ProductEntity {
   size?: string | null;
   color?: string | null;
   price: number;
+  inStock: boolean;
   createdAt?: Date | number;
   updatedAt? : Date | number;
 }

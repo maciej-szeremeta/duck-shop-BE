@@ -61,7 +61,7 @@ export const verifyTokenAndAuthorization = (
         next ();
       }
       else {
-        throw new ForbidenError ('Nie masz do tego uprawnień.');
+        throw new ForbidenError ('Dostęp do tego zasobu posiada tylko Uzytkownik i Administrator');
       }
     }
   );
@@ -77,7 +77,7 @@ export const verifyTokenAndAdmin = (
         next ();
       }
       else {
-        throw new ForbidenError ('Nie masz do tego uprawnień.');
+        throw new ForbidenError ('Dostęp do tego zasobu posiada tylko Administrator');
       }
     }
   );

@@ -21,6 +21,8 @@ export class ProductRecord implements ProductEntity {
 
   public price: number;
 
+  public inStock: boolean;
+
   public createdAt?: number | Date;
 
   public updatedAt?: number | Date;
@@ -34,6 +36,7 @@ export class ProductRecord implements ProductEntity {
     this.size = obj.size ?? null;
     this.color = obj.color ?? null;
     this.price = obj.price;
+    this.inStock = obj.inStock ?? true;
     this.createdAt= obj.createdAt ?? Date.now ();
     this.updatedAt= obj.updatedAt ?? Date.now ();
 
@@ -79,7 +82,7 @@ export class ProductRecord implements ProductEntity {
 
   async insert(): Promise<ProductRecord> {
     await pool.execute (
-      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :size, :color, :price, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+      'INSERT INTO `products` VALUES(:id, :title, :description, :img, :size, :color, :price, :inStock, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
         id         : this.id,
         title      : this.title,
         description: this.description,
@@ -87,6 +90,7 @@ export class ProductRecord implements ProductEntity {
         size       : this.size,
         color      : this.color,
         price      : this.price,
+        inStock    : this.inStock,
       }
     );
     return this as ProductRecord;
@@ -105,7 +109,7 @@ export class ProductRecord implements ProductEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`size`=:size,`color`=:color,`price`=:price,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+      'UPDATE `products` SET `title`= :title,`description`=:description,`img`=:img,`size`=:size,`color`=:color,`price`=:price,`inStock`=:inStock,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
         id         : this.id,
         title      : this.title,
         description: this.description,
@@ -113,6 +117,7 @@ export class ProductRecord implements ProductEntity {
         size       : this.size,
         color      : this.color,
         price      : this.price,
+        inStock    : this.inStock,
       }
     );
     return this.id;

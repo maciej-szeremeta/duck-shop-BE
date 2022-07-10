@@ -1,12 +1,12 @@
 import { FieldPacket, } from 'mysql2/promise';
 import { v4 as uuid, } from 'uuid';
 import { pool, } from '../utils/db';
-import { CategoryEntity, } from '../types';
+import { ColorEntity, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 
-type ProductCategoriesRecordResult = [ProductCategoriesRecord[], FieldPacket[]];
+type ColorRecordResult = [ColorRecord[], FieldPacket[]];
 
-export class ProductCategoriesRecord implements CategoryEntity {
+export class ColorRecord implements ColorEntity {
   public id?: string;
   
   public name: string;
@@ -15,7 +15,7 @@ export class ProductCategoriesRecord implements CategoryEntity {
   
   public updatedAt?: number | Date;
 
-  constructor(obj: Omit<CategoryEntity, 'insert'| 'update'>) {
+  constructor(obj: Omit<ColorEntity, 'insert'| 'update'>) {
 
     this.id = obj.id ?? uuid ();
     this.name = obj.name;
@@ -36,29 +36,29 @@ export class ProductCategoriesRecord implements CategoryEntity {
     }
   }
   
-  // * Sprawdzanie Unique Title WALIDACJA
+  // * Sprawdzanie Unique Color WALIDACJA
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
-      'SELECT * FROM `categories` WHERE `name`=:name', { name, }
-    )) as ProductCategoriesRecordResult;
+      'SELECT * FROM `colors` WHERE `name`=:name', { name, }
+    )) as ColorRecordResult;
     return results.length > 0;
   }
 
-  async insert(): Promise<ProductCategoriesRecord> {
+  async insert(): Promise<ColorRecord> {
     await pool.execute (
-      'INSERT INTO `categories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+      'INSERT INTO `colors` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
         id  : this.id,
         name: this.name,
       }
     );
-    return this as ProductCategoriesRecord;
+    return this as ColorRecord;
   }
 
-  static async getOneById(id: string): Promise<ProductCategoriesRecord | null> {
+  static async getOneById(id: string): Promise<ColorRecord | null> {
     const [ results, ] = (await pool.execute (
-      'SELECT * FROM `categories` WHERE `id`=:id', { id, }
-    )) as ProductCategoriesRecordResult;
-    return results.length === 0 ? null : new ProductCategoriesRecord (results[ 0 ]);
+      'SELECT * FROM `colors` WHERE `id`=:id', { id, }
+    )) as ColorRecordResult;
+    return results.length === 0 ? null : new ColorRecord (results[ 0 ]);
   } 
   
   async update(): Promise<string> {
@@ -67,7 +67,7 @@ export class ProductCategoriesRecord implements CategoryEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `categories` SET `name`= :name,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+      'UPDATE `colors` SET `name`= :name,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
         id  : this.id,
         name: this.name,
       }
@@ -75,9 +75,9 @@ export class ProductCategoriesRecord implements CategoryEntity {
     return this.id;
   }
   
-  static async listAll(): Promise<ProductCategoriesRecord[]> {
-    const [ results, ] = (await pool.execute ('SELECT * FROM `categories` ORDER BY `name` DESC;')) as ProductCategoriesRecordResult;
+  static async listAll(): Promise<ColorRecord[]> {
+    const [ results, ] = (await pool.execute ('SELECT * FROM `colors` ORDER BY `name` DESC;')) as ColorRecordResult;
     return results.map (obj => 
-      new ProductCategoriesRecord (obj));
+      new ColorRecord (obj));
   }
 }

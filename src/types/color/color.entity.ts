@@ -1,5 +1,5 @@
 
-export interface ProductCategoriesEntity {
+export interface ColorEntity {
   id?: string;
   name: string;
   createdAt?: Date | number;

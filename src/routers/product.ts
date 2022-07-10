@@ -27,6 +27,7 @@ productRouter
         size       : req.body.size,
         color      : req.body.color,
         price      : Number (req.body.price),
+        inStock    : req.body.inStock,
         
       } as CreateProductReq);
       const { id, } = await newProduct.insert ();
@@ -81,6 +82,7 @@ productRouter
       product.size = req.body.size || product.size;
       product.color = req.body.color || product.color;
       product.price = Number (req.body.price) || product.price;
+      product.inStock = req.body.inStock || product.inStock;
       const id = await product.update ();
       
       // * Update product categoriesList

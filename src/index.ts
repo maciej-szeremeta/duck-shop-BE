@@ -18,9 +18,10 @@ import { handleError, } from './utils/error';
 import { userRouter, } from './routers/user';
 import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
-import { categoriesRouter, } from './routers/categories';
+import { categoryRouter, } from './routers/category';
 import { cartRouter, } from './routers/cart';
 import { orderRouter, } from './routers/order';
+import { colorRouter, } from './routers/color';
 
 const app = express ();
 
@@ -54,7 +55,7 @@ router.use (
   '/product', productRouter
 );
 router.use (
-  '/product-categories', categoriesRouter
+  '/category', categoryRouter
 );
 router.use (
   '/cart', cartRouter
@@ -62,11 +63,14 @@ router.use (
 router.use (
   '/order', orderRouter
 );
+router.use (
+  '/color', colorRouter
+);
 app.use (
   '/api', router
 );
 
-// app.use (handleError );
+app.use (handleError );
 
 const PORT:number = config.PORT || 5000;
 

@@ -1,13 +1,13 @@
 import { Router, } from 'express';
-import { ListProductCategoriesRes, } from '../types/productCategories/productCategories';
+import { ListProductCategoriesRes, } from '../types/category/category';
 import { ProductCategoriesRecord, } from '../records/categories.record';
 import { CreateProductCategoriesReq, CreateProductCategoriesRes, ProductCategoriesRes, UpdateProductCategoriesRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
-export const categoriesRouter = Router ();
+export const categoryRouter = Router ();
 
-categoriesRouter
+categoryRouter
 
 // # Create category
   .post (
