@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import express, {
-  json, Router,
+  json, Router, static as eStatic,
 } from 'express';
 import rateLimit from 'express-rate-limit';
 
@@ -25,7 +25,9 @@ import { colorRouter, } from './routers/color';
 
 const app = express ();
 
-app.use (helmet () );
+app.use (helmet ({
+  crossOriginResourcePolicy: false,
+}) );
 
 app.use (rateLimit ({
   windowMs: 5 * 60 * 1000, // 5 minutes
@@ -33,7 +35,7 @@ app.use (rateLimit ({
 }));
 
 app.use (cors ({
-  origin : 'http://localhost:3000',
+  origin : [ 'http://localhost:3000', ],
   methods: 'GET,POST,DELETE,PUT,PATCH',
 
   // Ustawia poświadczenia nagłówka
@@ -43,6 +45,9 @@ app.use (cors ({
 app.use (morgan ('dev'));
 
 app.use (json ());
+
+// * Pliki Statyczne
+app.use (eStatic ('public'));
 
 const router = Router ();
 router.use (

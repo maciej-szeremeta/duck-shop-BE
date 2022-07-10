@@ -80,7 +80,7 @@ export class ColorRecord implements ColorEntity {
 
   // # Get All Colors
   static async listAll(): Promise<ColorRecord[]> {
-    const [ results, ] = (await pool.execute ('SELECT * FROM `colors` ORDER BY `name` DESC;')) as ColorRecordResult;
+    const [ results, ] = (await pool.execute ('SELECT * FROM `colors` ORDER BY `name` ASC;')) as ColorRecordResult;
     return results.map (obj => 
       new ColorRecord (obj));
   }

@@ -10,6 +10,10 @@ export class CategoryRecord implements CategoryEntity {
   public id?: string;
   
   public name: string;
+
+  public title: string;
+
+  public img: string;
   
   public createdAt?: number | Date;
   
@@ -19,6 +23,8 @@ export class CategoryRecord implements CategoryEntity {
 
     this.id = obj.id ?? uuid ();
     this.name = obj.name;
+    this.title = obj.title;
+    this.img = obj.img;
     this.createdAt= obj.createdAt ?? Date.now ();
     this.updatedAt= obj.updatedAt ?? Date.now ();
 
@@ -36,7 +42,7 @@ export class CategoryRecord implements CategoryEntity {
     }
   }
   
-  // # Sprawdzanie Unique Title WALIDACJA
+  // # Sprawdzanie Unique Name WALIDACJA
   static async isNameTaken(name: string): Promise<boolean> {
     const [ results, ] = (await pool.execute (
       'SELECT * FROM `categories` WHERE `name`=:name', { name, }
@@ -47,9 +53,11 @@ export class CategoryRecord implements CategoryEntity {
   // # Add Category
   async insert(): Promise<CategoryRecord> {
     await pool.execute (
-      'INSERT INTO `categories` VALUES(:id, :name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
-        id  : this.id,
-        name: this.name,
+      'INSERT INTO `categories` VALUES(:id, :name, :title, :img, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());', {
+        id   : this.id,
+        name : this.name,
+        title: this.title,
+        img  : this.img,
       }
     );
     return this as CategoryRecord;
@@ -70,9 +78,11 @@ export class CategoryRecord implements CategoryEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `categories` SET `name`= :name,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
-        id  : this.id,
-        name: this.name,
+      'UPDATE `categories` SET `name`= :name, :title, :img,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+        id   : this.id,
+        name : this.name,
+        title: this.title,
+        img  : this.img,
       }
     );
     return this.id;
