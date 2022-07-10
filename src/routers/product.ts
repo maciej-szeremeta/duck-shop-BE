@@ -3,7 +3,7 @@ import { CategoryRecord, } from '../records/category.record';
 import { ColorRecord, } from '../records/color.record';
 import { ProductRecord, } from '../records/products.record';
 import { ProductsCategoriesRecord, } from '../records/products_categories.record';
-import { CreateProductReq, CreateProductWithCategoriesRes, ListProductsRes, OneProductRes, } from '../types';
+import { CreateProductReq, CreateProductWithCategoriesRes, ListProductsRes, OneProductRes, UpdateProductWithCategoriesRes, } from '../types';
 import { NotFoundError, ValidationError, } from '../utils/error';
 import { verifyTokenAndAdmin, } from '../utils/verify';
 
@@ -121,7 +121,7 @@ productRouter
         ...product,
         categories: productsCategories,
       };
-      res.json ({ updateProduct, });
+      res.json (updateProduct as UpdateProductWithCategoriesRes);
     }
   )
 

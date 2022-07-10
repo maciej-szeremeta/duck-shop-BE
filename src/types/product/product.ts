@@ -11,6 +11,10 @@ export interface CreateProductWithCategoriesRes extends ProductEntity {
   categories: ProductsCategoriesEntity[]
 }
 
+export interface UpdateProductWithCategoriesRes extends ProductEntity {
+  categories: ProductsCategoriesEntity[]
+}
+
 export interface OneProductRes { oneProduct: ProductEntity }
 
 export interface ListProductsRes {
