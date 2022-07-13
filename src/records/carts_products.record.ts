@@ -5,6 +5,7 @@ import { CartsProductsEntity, } from '../types';
 import { NotFoundError, } from '../utils/error';
 
 type CartsProductsRecordResult = [CartsProductsRecord[], FieldPacket[]];
+type CartsProductsTotalPrice = [{ total: number }[], FieldPacket[]];
 
 export class CartsProductsRecord implements CartsProductsEntity {
 
@@ -18,7 +19,7 @@ export class CartsProductsRecord implements CartsProductsEntity {
   
   public updatedAt: number | Date;
 
-  constructor(obj: Omit<CartsProductsRecord, 'insert' | 'update'>) {
+  constructor(obj: Omit<CartsProductsRecord, 'insert' | 'update'| 'delete'>) {
     this.cartId = obj.cartId;
     this.productId = obj.productId;
     this.quantity = obj.quantity ?? 1;
@@ -77,25 +78,24 @@ export class CartsProductsRecord implements CartsProductsEntity {
   }
 
   // # Delete products from cart
-  // async delete(): Promise<string> {
-  //   if (!this.cartId) {
-  //     throw new NotFoundError ('Brak takiego id');
-  //   }
-  //   await pool.execute (
-  //     'DELETE FROM `carts_products` WHERE `cartId`=:cartId AND `productId`=:productId;', {
-  //       cartId   : this.cartId,
-  //       productId: this.productId,
-  //     }
-  //   );
-  //   return this.cartId;
-  // }
+  async delete(): Promise<string> {
+    if (!this.cartId) {
+      throw new NotFoundError ('Brak takiego id');
+    }
+    await pool.execute (
+      'DELETE FROM `carts_products` WHERE `cartId`=:cartId AND `productId`=:productId;', {
+        cartId   : this.cartId,
+        productId: this.productId,
+      }
+    );
+    return this.cartId;
+  }
 
-  // # Get One products_categories by ProductId
-  // static async getOneByProductId(productId: string): Promise<ProductsCategoriesRecord | null> {
-  //   const [ results, ] = (await pool.execute (
-  //     'SELECT * FROM `products_categories` WHERE `productId`=:productId', { productId, }
-  //   )) as ProductsCategoriesRecordResult;
-  //   return results.length === 0 ? null : new ProductsCategoriesRecord (results[ 0 ]);
-  // }
-
+  // # Get One products_categories by ProductId and CartId
+  static async getTotalCart(cartId: string): Promise<number> {
+    const [ results, ] = (await pool.execute (
+      'SELECT Sum(`carts_products`.`quantity` * `products`.`price`) as total FROM `products` JOIN `carts_products` ON `products`.`id` = `carts_products`.`productId` GROUP BY `carts_products`.`cartId` HAVING (((`carts_products`.`cartId`) =:cartId));', { cartId, }
+    )) as CartsProductsTotalPrice;
+    return Number (results[ 0 ].total);
+  }
 }

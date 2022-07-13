@@ -30,7 +30,6 @@ authRouter
         username: req.body.username,
         email   : req.body.email,
         password: saltAndHashPassword,
-        isAdmin : req.body.isAdmin,
       } as RegisterUserReq);
         
       await newUser.insert ();

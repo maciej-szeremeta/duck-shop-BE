@@ -1,6 +1,5 @@
 
 export interface CartsProductsEntity {
-  id?: number;
   cartId?: string;
   productId?: string;
   quantity: number;

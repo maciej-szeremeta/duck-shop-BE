@@ -1,11 +1,11 @@
 import { Router, } from 'express';
 import { CartsProductsRecord, } from '../records/carts_products.record';
+
 import { CartRecord, } from '../records/cart.record';
 
-import { CreateCartReq, } from '../types';
+import { CartsProductsEntity, CreateCartReq, } from '../types';
 import { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin, } from '../utils/verify';
-import { NotFoundError, ValidationError, } from '../utils/error';
-import { CreateProductCart, } from '../types/carts_products/carts_products';
+import { NotFoundError, } from '../utils/error';
 
 export const cartRouter = Router ();
 
@@ -44,17 +44,17 @@ cartRouter
           cartId   : cart.id,
           productId: req.body.productId,
           quantity : req.body.quantity,
-        } as CreateProductCart );
+        } as CartsProductsEntity);
         await newProductInCart.insert ();
       }
 
       const listProductsInCart = await CartsProductsRecord.listAll (String (cart.id));
-
+      const total = await CartsProductsRecord.getTotalCart (String (cart.id));
       const userCart = {
         ...cart,
         products: listProductsInCart,
         quantity: listProductsInCart.length,
-        total   : 100,
+        total,
       };
       res.status (201).json ({ userCart, });
     } 
@@ -80,20 +80,42 @@ cartRouter
 
 // # Delete product from cart
 // @ User
-// .delete (
-//   '/:id', verifyTokenAndAuthorization, async (
-//     req, res
-//   ) => {
-//     const cartProduct = await CartsProductsRecord.getOneByProductIdAndCart (
-//       req.params.cartId, req.body.productId
-//     );
-//     if (!cartProduct) {
-//       throw new NotFoundError ('Brak takiego id');
-//     }
-//     await cartProduct.delete ();
-//     res.status (204).end ();
-//   }
-// );
+  .delete (
+    '/:cartId/:productId', verifyTokenAndAuthorization, async (
+      req, res
+    ) => {
+      const cartProduct = await CartsProductsRecord.getOneByProductIdAndCart (
+        req.params.cartId, req.params.productId
+      );
+      if (!cartProduct) {
+        throw new NotFoundError ('Brak takiego id');
+      }
+      await cartProduct.delete ();
+      res.status (204).end ();
+    }
+  )
+  
+  // # Delete cart
+// @ User
+  .delete (
+    '/:cartId', verifyTokenAndAuthorization, async (
+      req, res
+    ) => {
+      const cartProducts = await CartsProductsRecord.listAll (req.params.cartId);
+      if (!cartProducts) {
+        throw new NotFoundError ('Brak takiego id');
+      }
+      for await (const cartProduct of cartProducts) {
+        await cartProduct.delete ();
+      }
+      const cart = await CartRecord.getOneById (req.params.cartId);  
+      if (!cart) {
+        throw new NotFoundError ('Brak takiego id');
+      }
+      await cart.delete ();
+      res.status (204).end ();
+    }
+  )
 
 // # Get User's cart
 // @ User
@@ -102,20 +124,29 @@ cartRouter
       req, res
     ) => {
       const cart = await CartRecord.getCartByUserId (req.params.userId);
+      console.log (cart);
       if (!cart) {
         throw new NotFoundError ('Nie odnaleziona takiego użytkownika.');
       }
-      res.json ({ cart, } ) ;
+      const listProductsInCart = await CartsProductsRecord.listAll (String (cart.id));
+      const total = await CartsProductsRecord.getTotalCart (String (cart.id));
+      const userCart = {
+        ...cart,
+        products: listProductsInCart,
+        quantity: listProductsInCart.length,
+        total,
+      };
+      res.json ({ userCart, });
+    }
+  )
+
+// # Get all carts
+// @ Admin
+  .get (
+    '/', verifyTokenAndAdmin, async (
+      req, res
+    ) => {
+      const cartsList = await CartRecord.listAll ();
+      res.json ({ cartsList, });
     }
   );
-
-// # Get all carts of Users
-// @ Admin
-// .get (
-//   '/', verifyTokenAndAdmin, async (
-//     req, res
-//   ) => {
-//     const cartsList = await CartRecord.listAll ();
-//     res.json ({ cartsList, });
-//   }
-// );
