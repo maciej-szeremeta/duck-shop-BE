@@ -4,15 +4,15 @@
   "description": "Rubber duck shop",
   "main": "index.ts",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/app.js",
     "clean": "rimraf dist/**",
     "format": "prettier --config .prettierrc --write ./src",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "copy:static": "mkdir -p dist && cp -R src/static dist/static",
     "build": "tsc --project tsconfig.json",
-    "dev": "nodemon --config nodemon.json src/index.ts",
+    "dev": "nodemon --config nodemon.json src/app.ts",
     "start:dev2": "nodemon --config nodemon.json --exec \"npm run build && npm run start\"",
-    "start:dev": "tsnd src/index.ts",
+    "start:dev": "tsnd src/app.ts",
     "build:prod": "npm run clean && npm run copy:static && npm run build",
     "test": "jest"
   },

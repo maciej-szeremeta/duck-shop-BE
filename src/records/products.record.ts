@@ -127,7 +127,7 @@ export class ProductRecord implements ProductEntity {
     topNew: string, category:string
   ): Promise<ProductRecord[]> {
     const [ results, ] = (await pool.execute (
-      'SELECT `products`.* FROM `products` JOIN `products_categories` ON `products`.`id` = `products_categories`.`productId` WHERE `products_categories`.`categoryName` LIKE :category ORDER BY `products`.`createdAt` DESC LIMIT :topNew;', { topNew: topNew || '100', category: category || '%', }
+      'SELECT DISTINCT `products`.* FROM `products` RIGHT JOIN `products_categories` ON `products`.`id` = `products_categories`.`productId` WHERE `products_categories`.`categoryName` LIKE :category ORDER BY `products`.`createdAt` DESC LIMIT :topNew ;', { topNew: topNew || '100', category: category || '%', }
     )) as ProductRecordResult;
     return results.map (obj => 
       new ProductRecord (obj));

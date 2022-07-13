@@ -35,7 +35,7 @@ app.use (rateLimit ({
 }));
 
 app.use (cors ({
-  origin : [ 'http://localhost:3000', ],
+  origin : [ 'http://localhost:3000', '*', ],
   methods: 'GET,POST,DELETE,PUT,PATCH',
 
   // Ustawia poświadczenia nagłówka
@@ -50,6 +50,11 @@ app.use (json ());
 app.use (eStatic ('public'));
 
 const router = Router ();
+router.use (
+  '/ok', (
+    req, res
+  ) => { res.json ('ok'); }
+);
 router.use (
   '/auth', authRouter
 );
@@ -77,7 +82,7 @@ app.use (
 
 app.use (handleError );
 
-const PORT:number = config.PORT || 5000;
+const PORT = config.PORT || 5000;
 
 app.listen (
   PORT, () => {

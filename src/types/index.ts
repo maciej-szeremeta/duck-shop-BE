@@ -4,6 +4,7 @@ export * from './category';
 export * from './products_categories';
 export * from './userProduct';
 export * from './cart';
+export * from './carts_products';
 export * from './order';
 export * from './orders_products';
 export * from './color';
