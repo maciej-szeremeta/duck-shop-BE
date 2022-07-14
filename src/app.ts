@@ -20,8 +20,6 @@ import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
 import { categoryRouter, } from './routers/category';
 import { cartRouter, } from './routers/cart';
-
-// import { orderRouter, } from './routers/order';
 import { colorRouter, } from './routers/color';
 
 const app = express ();
@@ -52,9 +50,9 @@ app.use (eStatic ('public'));
 
 const router = Router ();
 router.use (
-  '/ok', (
+  '/test', (
     req, res
-  ) => { res.json ('ok'); }
+) => { res.json({ message: 'Api OK'}) }
 );
 router.use (
   '/auth', authRouter
@@ -71,10 +69,6 @@ router.use (
 router.use (
   '/cart', cartRouter
 );
-
-// router.use (
-//   '/order', orderRouter
-// );
 router.use (
   '/color', colorRouter
 );
