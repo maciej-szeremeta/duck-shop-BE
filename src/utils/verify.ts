@@ -1,6 +1,5 @@
 import { verify, } from 'jsonwebtoken';
 import { NextFunction, Request, Response, } from 'express';
-import { Console, } from 'console';
 import { ForbidenError, UnauthorizedError, } from './error';
 import { config, } from '../config/config';
 

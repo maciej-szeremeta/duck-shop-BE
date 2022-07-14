@@ -20,7 +20,8 @@ import { authRouter, } from './routers/auth';
 import { productRouter, } from './routers/product';
 import { categoryRouter, } from './routers/category';
 import { cartRouter, } from './routers/cart';
-import { orderRouter, } from './routers/order';
+
+// import { orderRouter, } from './routers/order';
 import { colorRouter, } from './routers/color';
 
 const app = express ();
@@ -70,9 +71,10 @@ router.use (
 router.use (
   '/cart', cartRouter
 );
-router.use (
-  '/order', orderRouter
-);
+
+// router.use (
+//   '/order', orderRouter
+// );
 router.use (
   '/color', colorRouter
 );

@@ -9,7 +9,7 @@ export interface TokenPayload {
 export const generateAccessToken = (user: TokenPayload):string => {
   return sign (
     { id: user.id, isAdmin: user.isAdmin, }, config.JWT_KEY, {
-      expiresIn: '3d',
+      expiresIn: '30d',
     }
   );
 };
