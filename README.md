@@ -16,12 +16,27 @@
 
 - [x] ExpressJS
 - [x] MySql
+- [x] TypeScript
 
 ### _Aplikacje można testować pobierając oraz importując plik `.json` do Insomni lub Postamana_ [Link](https://duck-shop.pl/api/insomnia/DuckShop.postman_insomnia.json "MySql")🦆
 
 ---
 
+## Skills
+
+- [x] `Obsługa błędów` 😊
+- [x] `Tworzenie tokena z rolami (Admin,User)`😊
+- [x] `Weryfikacja użytkownika JWT (Admin,User)`😊
+- [x] `TypeScript`😟
+- [ ] `Testy`😮
+
+---
+
 ## Endpointy
+
+---
+
+USERS
 
   <details>
 <summary> Tabela Users </summary>
@@ -32,8 +47,6 @@
 
 </details>
 
----
-
 ### `api/auth`
 
 - POST **auth/register**
@@ -42,7 +55,7 @@ Rejestracja użytkownika
 
 - POST **auth/login**
 
-Logowanie użytkownika - informacja zwrotną jest TOKEN wykorzystywana z w celu autoryzacji i autentykacji.
+Logowanie użytkownika - informacją zwrotną jest TOKEN wykorzystywana z w celu autoryzacji i autentykacji ( _dziwnie to brzmi po polsku_ 😉).
 
 ### `api/user`
 
@@ -53,3 +66,92 @@ Pobranie jednego użytkownika
 - GET **user?top=100** (@Admin)
 
 Pobranie wielu użytkowników z możliwością ograniczenia ilości w parametrze
+
+- GET **user/stats** (@Admin)
+
+Prosta statystyka ilość zarejestrowanych użytkowników w miesiącach.
+
+- PATCH **user/** (@User)
+
+Aktualizacja danych użytkownika
+
+- DELETE **user/:id** (@Admin)
+
+Usówanie użytkownika
+
+---
+
+PRODUCTS
+
+  <details>
+<summary> Tabela Products </summary>
+
+| id     | title       | description        | img                                                           | size | colorId                              | price | inStock |
+| ------ | ----------- | ------------------ | ------------------------------------------------------------- | ---- | ------------------------------------ | ----- | ------- |
+| uuid() | Batman Duck | Najlepsza kaczucha | [batmanduck](https://duck-shop.pl/api/batmanduck600x600t.png) | M    | 211ae6be-238d-4334-bdac-ae0747fbc7a7 | 12,33 | 1       |
+
+`colorId relacja wiele-do-jednego`
+
+</details>
+
+  <details>
+<summary> Tabela Products_categories </summary>
+
+| id             | productId                            | categoryName |
+| -------------- | ------------------------------------ | ------------ |
+| auto_increment | f9d4cb5f-1ac5-4ef5-915d-d10ce0d1841c | Junior       |
+| auto_increment | f9d4cb5f-1ac5-4ef5-915d-d10ce0d1841c | Senior       |
+
+`products_categories relacja wiele-do-wielu`
+
+</details>
+
+  <details>
+<summary> Tabela Categories </summary>
+
+| id     | name   | title            | img                                                          |
+| ------ | ------ | ---------------- | ------------------------------------------------------------ |
+| uuid() | Senior | Senior developer | [Senior Duck](https://duck-shop.pl/api/oldduck600x600.png)   |
+| uuid() | Junior | Junior developer | [Junior Duck](https://duck-shop.pl/api/childduck600x600.png) |
+| uuid() | Mid    | Mid developer    | [Mid Duck](https://duck-shop.pl/api/superduck600x600.png)    |
+
+</details>
+  <details>
+<summary> Tabela Colors </summary>
+
+| id     | name     |
+| ------ | -------- |
+| uuid() | Czarna   |
+| uuid() | Czerwona |
+
+</details>
+
+### `api/product`
+
+- POST **product/** (@Admin)
+
+Tworzenie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+
+- PATCH **product/:id** (@Admin)
+
+Aktualizacja produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+
+- GET **product/find/:id** (@All)
+
+Pobranie jednego produktu
+
+- GET **product?top=10&category=Mid** (@All)
+
+Pobranie wszystkich produktów w możliwością ograniczenia ilości oraz filtrowaniem po kategorii
+
+- DELETE **product/:id** (@Admin)
+
+Usówanie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+
+### `api/colors`
+
+- GET, POST, PATCH, DELETE (FULL CRUD) (@Admin)
+
+### `api/categories`
+
+- GET, POST, PATCH, DELETE (FULL CRUD) (@Admin)
