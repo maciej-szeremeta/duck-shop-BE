@@ -1,0 +1,624 @@
+{
+	"info": {
+		"_postman_id": "7cf9510b-8f4f-4e04-b5c0-ee042b428768",
+		"name": "DuckShop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20155620"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"user3\",\r\n    \"email\":\"user3@user.pl\",\r\n    \"password\":\"user3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/auth/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Patch User Data",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgzNTBkZDNhLTQ2MTItNDMyNS04NWE4LTI1MTlhNjMwZDU1ZSIsImlzQWRtaW4iOjAsImlhdCI6MTY1NzgyNzU0MywiZXhwIjoxNjYwNDE5NTQzfQ.8x6Z0Kl6xaA67o4f16U3Ufc0Bj_mqS0MwrxqGcpBedw"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"user\",\r\n    \"email\": \"user@user.pl\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/user/8350dd3a-4612-4325-85a8-2519a630d55e"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgzNTBkZDNhLTQ2MTItNDMyNS04NWE4LTI1MTlhNjMwZDU1ZSIsImlzQWRtaW4iOjAsImlhdCI6MTY1NzgyNzU0MywiZXhwIjoxNjYwNDE5NTQzfQ.8x6Z0Kl6xaA67o4f16U3Ufc0Bj_mqS0MwrxqGcpBedw"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://duck-shop.pl/api/user/8350dd3a-4612-4325-85a8-2519a630d55e"
+					},
+					"response": []
+				},
+				{
+					"name": "Get One User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgzNTBkZDNhLTQ2MTItNDMyNS04NWE4LTI1MTlhNjMwZDU1ZSIsImlzQWRtaW4iOjAsImlhdCI6MTY1NzgyNzU0MywiZXhwIjoxNjYwNDE5NTQzfQ.8x6Z0Kl6xaA67o4f16U3Ufc0Bj_mqS0MwrxqGcpBedw"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/user/find/8350dd3a-4612-4325-85a8-2519a630d55e"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://duck-shop.pl/api/user?top=100",
+							"protocol": "https",
+							"host": [
+								"duck-shop",
+								"pl"
+							],
+							"path": [
+								"api",
+								"user"
+							],
+							"query": [
+								{
+									"key": "top",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stats Users",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/user/stats"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Add Product's Category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Senior2\",\r\n    \"title\":\"Senor developer\",\r\n    \"img\":\"https://duck-shop.pl/api/infantduck600x600.png\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/category"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Products' Category",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Senior4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/category/1c128517-e39c-4407-a2d3-4d793a3455c1"
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Product's Category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/category/find/ff89cb99-e254-4dbd-9b56-983ccf50d408"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Categories of products",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/category"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Color",
+			"item": [
+				{
+					"name": "Add Product's Color",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Testowy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/color"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product's Color",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Testowy2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/color/c4b678bc-6b76-425b-906f-e3200b569455"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product's Color",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/color/find/c4b678bc-6b76-425b-906f-e3200b569455"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Product's Color",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/color"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Add Product",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Batman Duck\",\r\n    \"description\":\"Opis Kaczki\",\r\n    \"img\":\"https://duck-shop.pl/api/batmanduck600x600.png\",\r\n    \"categories\":[\"Mid\"],\r\n    \"size\":\"S\",\r\n    \"colorId\":\"211ae6be-238d-4334-bdac-ae0747fbc7a7\",\r\n    \"price\":19.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/product"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Opis Kaczki\",\r\n    \"img\":\"https://duck-shop.pl/api/batmanduck600x600.png\",\r\n    \"categories\":[\"Mid\",\"Junior\"],\r\n    \"size\":\"M\",\r\n    \"price\":12.55\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/product/5027fa28-0c64-4662-b1ea-fb53d928ab14"
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Product",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/product/find/9281c08d-c3b6-4b24-b3cb-66a10b9c428c"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All  Products",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/product"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete  Product",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3Mjc2YmMxLWE1OTgtNDNlMy1iMzNlLWE4M2Q0ZTljZWIzYSIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzIxMDE3OCwiZXhwIjoxNjU3NDY5Mzc4fQ.CZeU5LOkKMmhGFDLaPd1FlbS9RrEDScmHjm6hcnGPSk"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://duck-shop.pl/api/product/81ca4cd6-5403-407e-be7c-cd0a69a1ad4a"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add Cart and Product to Cart",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":\"c0cbe68e-67af-4495-aec1-4c00cf98ee2c\",\r\n    \"productId\":\"f089f588-3e84-4c46-8cc0-ab95e7ba9bcb\",\r\n    \"quantity\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/cart"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Quantity Product from Cart",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzcyMjQ4NCwiZXhwIjoxNjU3OTgxNjg0fQ.A4YRMI9hs_CLuM5DZ_KmWHMeK4rLgHEgt5a6yC0J5oI"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\":\"f089f588-3e84-4c46-8cc0-ab95e7ba9bcb\",\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://duck-shop.pl/api/cart/20116395-de80-44fd-b0e3-c56fcc329b4b"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product from Cart",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzcyMjQ4NCwiZXhwIjoxNjU3OTgxNjg0fQ.A4YRMI9hs_CLuM5DZ_KmWHMeK4rLgHEgt5a6yC0J5oI"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://duck-shop.pl/api/cart/97fed1bd-aee5-48ee-8607-a1ba5541c7b1/61468492-839d-40e1-b9ae-814bdfc748e2"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cart",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzcyMjQ4NCwiZXhwIjoxNjU3OTgxNjg0fQ.A4YRMI9hs_CLuM5DZ_KmWHMeK4rLgHEgt5a6yC0J5oI"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "https://duck-shop.pl/api/cart/989fc061-c9a5-4ff9-9565-0dde52368484"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products from Cart",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzcyMjQ4NCwiZXhwIjoxNjU3OTgxNjg0fQ.A4YRMI9hs_CLuM5DZ_KmWHMeK4rLgHEgt5a6yC0J5oI"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/cart/find/c0cbe68e-67af-4495-aec1-4c00cf98ee2c"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Carts",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwY2JlNjhlLTY3YWYtNDQ5NS1hZWMxLTRjMDBjZjk4ZWUyYyIsImlzQWRtaW4iOjEsImlhdCI6MTY1NzgyNzkwNSwiZXhwIjoxNjYwNDE5OTA1fQ.BwHXYMZdOr46bw_9ER7eh_ishmgUgGLi9fAeexEi0rM"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "https://duck-shop.pl/api/cart/"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://duck-shop.pl/api/test"
+			},
+			"response": []
+		}
+	]
+}

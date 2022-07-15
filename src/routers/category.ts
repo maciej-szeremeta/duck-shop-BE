@@ -18,7 +18,9 @@ categoryRouter
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
       const newCategory = new CategoryRecord ({
-        name: req.body.name,
+        name : req.body.name,
+        title: req.body.title,
+        img  : req.body.img,
       } as CreateCategoryReq);        
       await newCategory.insert ();   
       res.status (201).json ({ newCategory, } as CreateCategoryRes);
@@ -33,16 +35,16 @@ categoryRouter
     ) => {
       
       const category = await CategoryRecord.getOneById (req.params.id);
-      
       if (!category) {
         throw new NotFoundError ('Brak takiego id');
       }
       if (await CategoryRecord.isNameTaken (req.body.name)) {
         throw new ValidationError (`Kategoria ${req.body.name} znajduje się już w bazie.`);
       }
-
       category.name = req.body.name || category.name;
-
+      category.title = req.body.title || category.title;
+      category.img = req.body.img || category.img;
+      
       await category.update ();
       
       res.json ({ category, } as UpdateCategoryRes);
@@ -56,7 +58,6 @@ categoryRouter
       req, res
     ) => {
       const category = await CategoryRecord.getOneById (req.params.id);
-
       if (!category) {
         throw new NotFoundError ('Nie odnaleziona takiej kategorii produktu.');
       }

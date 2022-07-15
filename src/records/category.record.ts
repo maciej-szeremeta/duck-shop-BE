@@ -78,7 +78,7 @@ export class CategoryRecord implements CategoryEntity {
     }
     this._validate ();
     await pool.execute (
-      'UPDATE `categories` SET `name`= :name, :title, :img,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
+      'UPDATE `categories` SET `name`= :name, `title`=:title, `img`=:img,`updatedAt`=CURRENT_TIMESTAMP() WHERE `id`=:id', {
         id   : this.id,
         name : this.name,
         title: this.title,

@@ -7,6 +7,7 @@ import express, {
 } from 'express';
 import rateLimit from 'express-rate-limit';
 
+import path from 'path';
 import { config, } from './config/config';
 
 import 'express-async-errors';
@@ -52,7 +53,17 @@ const router = Router ();
 router.use (
   '/test', (
     req, res
-) => { res.json({ message: 'Api OK'}) }
+  ) => { res.json ({ message: 'Api OK', }); }
+);
+router.use (
+  '/insomnia', (
+    req, res
+  ) => {
+    const file = path.join (
+      __dirname, '../public/DuckShop.postman_insomnia.json'
+    );
+    res.download (file);
+  }
 );
 router.use (
   '/auth', authRouter
