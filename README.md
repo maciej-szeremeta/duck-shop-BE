@@ -1,9 +1,5 @@
 # Aplikacje backendowa sklepu z gumowymi kaczkami dla programistów **`www.duck-shop.pl`**
 
-[![NPM Version][npm-version-image]][npm-url]
-[![NPM Install Size][npm-install-size-image]][npm-install-size-url]
-[![NPM Downloads][npm-downloads-image]][npm-downloads-url]
-
 ## ![Duck](https://duck-shop.pl/api/superduck600x600.png "duck-shop.pl")
 
 > Pierwszy raz gumowa kaczka w świecie IT pojawiła się za sprawą legendarnej książki pt. “The Pragmatic Programmer” autorstwa Andrew Hunta i Davida Thomasa z 1999 roku, która do dziś otwiera głowy przyszłych adeptów sztuki codingu. To właśnie tam pierwszy raz padło pojęcie rubber duck debuggingu, czyli metoda gumowej kaczki dla programistów. Od tamtej pory żółty ptak stał się najlepszym przyjacielem programistów i świetnym pomysłem na prezent dla miłośników IT.
@@ -51,7 +47,7 @@ USERS
 
 - POST **auth/register**
 
-Rejestracja użytkownika
+Rejestracja użytkownika.
 
 - POST **auth/login**
 
@@ -61,11 +57,11 @@ Logowanie użytkownika - informacją zwrotną jest TOKEN wykorzystywana z w celu
 
 - GET **user/find/:id** (@User)
 
-Pobranie jednego użytkownika
+Pobranie jednego użytkownika.
 
 - GET **user?top=100** (@Admin)
 
-Pobranie wielu użytkowników z możliwością ograniczenia ilości w parametrze
+Pobranie wielu użytkowników z możliwością ograniczenia ilości w parametrze.
 
 - GET **user/stats** (@Admin)
 
@@ -73,11 +69,11 @@ Prosta statystyka ilość zarejestrowanych użytkowników w miesiącach.
 
 - PATCH **user/** (@User)
 
-Aktualizacja danych użytkownika
+Aktualizacja danych użytkownika.
 
 - DELETE **user/:id** (@Admin)
 
-Usówanie użytkownika
+Usówanie użytkownika.
 
 ---
 
@@ -130,28 +126,80 @@ PRODUCTS
 
 - POST **product/** (@Admin)
 
-Tworzenie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+Tworzenie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu).
 
 - PATCH **product/:id** (@Admin)
 
-Aktualizacja produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+Aktualizacja produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu).
 
 - GET **product/find/:id** (@All)
 
-Pobranie jednego produktu
+Pobranie jednego produktu.
 
 - GET **product?top=10&category=Mid** (@All)
 
-Pobranie wszystkich produktów w możliwością ograniczenia ilości oraz filtrowaniem po kategorii
+Pobranie wszystkich produktów w możliwością ograniczenia ilości oraz filtrowaniem po kategorii.
 
 - DELETE **product/:id** (@Admin)
 
-Usówanie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu)
+Usówanie produktu oraz aktualizacja tabeli products_categories (relacja wiele-do-wielu).
 
 ### `api/colors`
 
-- GET, POST, PATCH, DELETE (FULL CRUD) (@Admin)
+- GET, POST, PATCH, DELETE (CRUD) (@Admin)
 
 ### `api/categories`
 
-- GET, POST, PATCH, DELETE (FULL CRUD) (@Admin)
+- GET, POST, PATCH, DELETE (CRUD) (@Admin)
+
+---
+
+CART
+
+  <details>
+<summary> Tabela Carts </summary>
+
+| id     | title  |
+| ------ | ------ |
+| uuid() | userId |
+
+</details>
+
+  <details>
+<summary> Tabela Carts_products </summary>
+
+| id             | cartID                               | productId                            | quantity |
+| -------------- | ------------------------------------ | ------------------------------------ | -------- |
+| auto_increment | 20116395-de80-44fd-b0e3-c56fcc329b4b | f089f588-3e84-4c46-8cc0-ab95e7ba9bcb | 1        |
+
+</details>
+
+### `api/cart`
+
+- POST **cart/** (@User)
+
+Dodawanie do koszyka przez tworzenie nowego koszyka oraz relacji z przedmiotami w tabeli carts_products.
+
+- PATCH **product/:cartId** (@User)
+
+Aktualizacja ilości produktu (produkt podawany w parametrze).
+
+- DELETE **product/:cartId/:productId** (@User)
+
+Usówanie produktu z koszyka.
+
+- DELETE **product/:cartId** (@User)
+
+Usówanie całego koszyka.
+
+- GET **product/:userId** (@User)
+
+Pobranie koszyka użytkownika z informacja zwrotną z listą produktów, ilością pozycji w koszyku oraz wartością koszyka.
+
+- GET **product/** (@Admin)
+
+Poranie wszystkich koszyków.
+
+---
+
+## 🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆
